@@ -60,9 +60,7 @@ namespace Day_Logger
             dlg.DefaultExt = ".dlog";
             dlg.Filter = "Day Log (.dlog)|*.dlog";
 
-            Nullable<bool> result = Convert.ToBoolean(dlg.ShowDialog());
-
-            if (result == true)
+            if (dlg.ShowDialog() == DialogResult.OK)
             {
                 return dlg.FileName;
             }

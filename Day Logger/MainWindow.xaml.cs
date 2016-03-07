@@ -137,7 +137,7 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs</param>
         private void OnNew_Click(object sender, RoutedEventArgs e)
         {
-            if(changed == true)
+            if (changed == true)
             {
                 MessageBoxResult result = System.Windows.MessageBox.Show("Would you like to save the current changes?", "Confirm Changes",
                                 MessageBoxButton.YesNo);
@@ -163,34 +163,6 @@ namespace Day_Logger
         }
 
         /// <summary>
-        /// Handle the OnSave event for saving the document.
-        /// </summary>
-        /// <param name="sender">The Event sender.</param>
-        /// <param name="e">The RoutedEventArgs</param>
-        private void OnSave_Click(object sender, RoutedEventArgs e)
-        {
-            StringBuilder sString = new StringBuilder("Start Time, End Time, Duration, Status\r\n");
-
-            foreach (TimeStamp tStamp in lvStamps.Items)
-            {
-                sString.AppendLine(tStamp.STime + "," + tStamp.ETime + "," + tStamp.Duration + "," + tStamp.Status + "," + tStamp.Description);
-            }
-
-            // Check to see if FilePath has been determined previously.
-            if(FilePath == null && FilePath != String.Empty)
-            {
-                // Create FilePath if it was not aready determined.
-                FilePath = TimestampFunctions.GetSaveFile();
-            }
-
-            // Check FilePath to see if the user hit "cancel"
-            if(FilePath != String.Empty)
-                File.WriteAllText(FilePath, sString.ToString());
-
-            changed = false;
-        }
-
-        /// <summary>
         /// Handle the OnOpen event for saving the document.
         /// </summary>
         /// <param name="sender">The Event sender.</param>
@@ -209,6 +181,44 @@ namespace Day_Logger
                 // Show the new window.
                 mWin.Show();
             }
+        }
+
+        /// <summary>
+        /// Handle the OnSave event for saving the document.
+        /// </summary>
+        /// <param name="sender">The Event sender.</param>
+        /// <param name="e">The RoutedEventArgs</param>
+        private void OnSave_Click(object sender, RoutedEventArgs e)
+        {
+            StringBuilder sString = new StringBuilder("Start Time, End Time, Duration, Status\r\n");
+
+            foreach (TimeStamp tStamp in lvStamps.Items)
+            {
+                sString.AppendLine(tStamp.STime + "," + tStamp.ETime + "," + tStamp.Duration + "," + tStamp.Status + "," + tStamp.Description);
+            }
+
+            // Check to see if FilePath has been determined previously.
+            if (FilePath == null || FilePath == String.Empty)
+            {
+                // Create FilePath if it was not aready determined.
+                FilePath = TimestampFunctions.GetSaveFile();
+            }
+
+            // Check FilePath to see if the user hit "cancel"
+            if (FilePath != String.Empty)
+            {
+                File.WriteAllText(FilePath, sString.ToString());
+                changed = false;
+            }
+        }
+
+        /// <summary>
+        /// Handle the Save As event for saving the document.
+        /// </summary>
+        /// <param name="sender">The Event sender.</param>
+        /// <param name="e">The RoutedEventArgs</param>
+        private void OnSaveAs_Click(object sender, RoutedEventArgs e)
+        {
         }
 
         /// <summary>
@@ -244,6 +254,22 @@ namespace Day_Logger
             {
                 OnSave_Click(this, new RoutedEventArgs());
             }
+        }
+        #endregion
+        #region ListView Events
+        private void OnText_DoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            textBox.IsReadOnly = false;
+            textBox.SelectAll();
+            textBox.Background = new SolidColorBrush(Colors.White);
+        }
+
+        private void OnText_LostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            textBox.IsReadOnly = true;
+            textBox.Background = new SolidColorBrush(Colors.WhiteSmoke);
         }
         #endregion
         #region Timer Events
