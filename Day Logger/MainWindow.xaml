@@ -37,7 +37,7 @@
             <RowDefinition Height="22"/>
             <RowDefinition Height="34"/>
             <RowDefinition Height="34"/>
-            <RowDefinition Height="606"/>
+            <RowDefinition Height="606*"/>
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0">
             <Menu DockPanel.Dock="Top">
@@ -45,7 +45,7 @@
                     <MenuItem Header="_New" Click="OnNew_Click"/>
                     <MenuItem Header="_Open" Click="OnOpen_Click"/>
                     <MenuItem Header="_Save"  Click="OnSave_Click"/>
-                    <MenuItem Header="_Save As"/>
+                    <MenuItem Header="_Save As" Click="OnSaveAs_Click"/>
                     <MenuItem Header="_Exit" Click="OnExit_Click"/>
                 </MenuItem>
             </Menu>
@@ -58,13 +58,19 @@
                 <ColumnDefinition Width="92"/>
                 <ColumnDefinition Width="55"/>
                 <ColumnDefinition Width="179"/>
-                <ColumnDefinition Width="1028"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="170"/>
+                <ColumnDefinition Width="103"/>
+                <ColumnDefinition Width="117"/>
+                <ColumnDefinition Width="125"/>
+                <ColumnDefinition Width="110"/>
+                <ColumnDefinition Width="377"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Margin="10,10,0,0" Content="Start Time:" />
             <TextBox x:Name="txtStartTime" Grid.Column="1" Margin="0,10,0,2" />
             <Label Grid.Column="2" Margin="10,10,0,0" Content="End Time:" />
             <TextBox x:Name="txtEndTime" Grid.Column="3" Margin="0,10,0,2" />
-            <Label Grid.Column="4" Margin="10,9,0,1" Content="Status:" />
+            <Label Grid.Column="4" Margin="10,10,0,0" Content="Status:" />
             <ComboBox x:Name="cStatusBox" Grid.Column="5" HorizontalAlignment="Left" Margin="0,9,0,0" VerticalAlignment="Top" Width="179" Height="25">
                 <ComboBoxItem Content="" />
                 <ComboBoxItem Content="Away From Desk" />
@@ -78,6 +84,27 @@
                 <ComboBoxItem Content="Tech II Time" />
                 <ComboBoxItem Content="Working on E-mail" />
             </ComboBox>
+            <Label Grid.Column="6" Margin="10,8,0,0" Content="Call Type:" />
+            <ComboBox x:Name="cCallTypeBox" Grid.Column="7" HorizontalAlignment="Left" Margin="0,9,0,0" VerticalAlignment="Top" Width="170" Height="25">
+                <ComboBoxItem Content="" />
+                <ComboBoxItem Content="Customer From CS" />
+                <ComboBoxItem Content="Customer From PB" />
+                <ComboBoxItem Content="Customer From Sales" />
+                <ComboBoxItem Content="Direct From CS" />
+                <ComboBoxItem Content="Direct From Customer" />
+                <ComboBoxItem Content="Direct From PB" />
+                <ComboBoxItem Content="Direct From Sales" />
+            </ComboBox>
+            <Label Grid.Column="8" Margin="10,8,0,0" Content="Customer Type:" />
+            <ComboBox x:Name="cCustomerTypeBox" Grid.Column="9" HorizontalAlignment="Left" Margin="0,9,0,0" VerticalAlignment="Top" Width="117" Height="25">
+                <ComboBoxItem Content="" />
+                <ComboBoxItem Content="Conference" />
+                <ComboBoxItem Content="Follow-Up" />
+                <ComboBoxItem Content="No Customer" />
+                <ComboBoxItem Content="Transfer" />
+            </ComboBox>
+            <Label Grid.Column="10" Margin="10,8,0,0" Content="Reference Number:" />
+            <TextBox x:Name="txtReferenceNumber" Grid.Column="11" Margin="0,9,0,0" />
         </Grid>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
@@ -88,7 +115,7 @@
             <Button x:Name="btnAddStamp" Grid.Column="0" Margin="10,9,0,0" Content="+ Add Timestamp" Click="btnAddStamp_Click" />
             <Button x:Name="btnRemoveStamp" Grid.Column="1" Margin="0,9,0,0" Content="- Remove Timestamp" Height="25" VerticalAlignment="Top" Click="btnRemoveStamp_Click" IsHitTestVisible="True" />
         </Grid>
-        <ListView x:Name="lvStamps" Margin="10,10,10,-10" Grid.Row="3">
+        <ListView x:Name="lvStamps" Margin="10,10,10,10" Grid.Row="3">
             <ListView.View>
                 <GridView>
                     <GridViewColumn x:Name="txtStart" Width="100" Header="Start Time" CellTemplate="{StaticResource txtTemplateStart}"/>

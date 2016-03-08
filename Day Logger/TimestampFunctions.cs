@@ -81,5 +81,17 @@ namespace Day_Logger
             else
                 return String.Empty;
         }
+
+        public static string GetDesString(string callType, string cusType, string refNum)
+        {
+            if (callType == String.Empty)
+                return String.Empty;
+
+            string retString = callType 
+                + ((cusType == String.Empty) ? String.Empty : " - " + cusType) 
+                + ((refNum == String.Empty) ? String.Empty : " - " + refNum);
+
+            return retString;
+        }
     }
 }

@@ -57,7 +57,8 @@ namespace Day_Logger
                     STime = res[0],
                     ETime = res[1],
                     Duration = res[2],
-                    Status = res[3]
+                    Status = res[3],
+                    Description = res[4]
                 });
             }
         }
@@ -73,7 +74,7 @@ namespace Day_Logger
 
             DispatcherTimer dispTimer = new DispatcherTimer();
             dispTimer.Tick += new EventHandler(dispTimer_Tick);
-            dispTimer.Interval = new TimeSpan(0, 1, 0);
+            dispTimer.Interval = new TimeSpan(0, 0, 10);
             dispTimer.Start();
 
             AddHandler(Keyboard.KeyDownEvent, (System.Windows.Input.KeyEventHandler)HandleSaveKeyEvent);
@@ -92,6 +93,9 @@ namespace Day_Logger
             addition.STime = txtStartTime.Text;
             addition.ETime = txtEndTime.Text;
             addition.Status = cStatusBox.SelectionBoxItem.ToString();
+            addition.Description = TimestampFunctions.GetDesString(cCallTypeBox.SelectionBoxItem.ToString(), 
+                                                                   cCustomerTypeBox.SelectionBoxItem.ToString(),
+                                                                   txtReferenceNumber.Text);
 
             try
             {
@@ -250,9 +254,15 @@ namespace Day_Logger
         /// <param name="e">The KeyEventArgs for key input</param>
         private void HandleSaveKeyEvent(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if(e.Key == Key.S && (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl)))
+            switch(e.Key)
             {
-                OnSave_Click(this, new RoutedEventArgs());
+                case Key.S:
+                    if (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl))
+                        OnSave_Click(this, new RoutedEventArgs());
+                    break;
+                case Key.Delete:
+                    btnRemoveStamp_Click(this, new RoutedEventArgs());
+                    break;
             }
         }
         #endregion

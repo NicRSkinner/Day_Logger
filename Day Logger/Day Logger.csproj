@@ -73,6 +73,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ConfigOperations.cs" />
     <Compile Include="TimeStamp.cs" />
     <Compile Include="TimestampFunctions.cs" />
     <Page Include="MainWindow.xaml">
