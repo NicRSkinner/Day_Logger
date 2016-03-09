@@ -9,6 +9,7 @@ namespace Day_Logger
 {
     public class TimeStamp
     {
+        #region Accessors
         public string STime
         {
             get { return sTime; }
@@ -38,11 +39,13 @@ namespace Day_Logger
             get { return description; }
             set { description = value; }
         }
-
+        #endregion
+        #region Variables
         private string sTime;
         private string eTime;
         private string duration;
         private string status;
         private string description;
+        #endregion
     }
 }

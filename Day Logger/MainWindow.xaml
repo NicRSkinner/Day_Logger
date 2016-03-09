@@ -73,35 +73,14 @@
             <Label Grid.Column="4" Margin="10,10,0,0" Content="Status:" />
             <ComboBox x:Name="cStatusBox" Grid.Column="5" HorizontalAlignment="Left" Margin="0,9,0,0" VerticalAlignment="Top" Width="179" Height="25">
                 <ComboBoxItem Content="" />
-                <ComboBoxItem Content="Away From Desk" />
-                <ComboBoxItem Content="At Lunch" />
-                <ComboBoxItem Content="Down-Time" />
-                <ComboBoxItem Content="In a Meeting" />
-                <ComboBoxItem Content="On Break" />
-                <ComboBoxItem Content="Opened Software" />
-                <ComboBoxItem Content="Phone Interaction" />
-                <ComboBoxItem Content="Special Projects" />
-                <ComboBoxItem Content="Tech II Time" />
-                <ComboBoxItem Content="Working on E-mail" />
             </ComboBox>
             <Label Grid.Column="6" Margin="10,8,0,0" Content="Call Type:" />
             <ComboBox x:Name="cCallTypeBox" Grid.Column="7" HorizontalAlignment="Left" Margin="0,9,0,0" VerticalAlignment="Top" Width="170" Height="25">
                 <ComboBoxItem Content="" />
-                <ComboBoxItem Content="Customer From CS" />
-                <ComboBoxItem Content="Customer From PB" />
-                <ComboBoxItem Content="Customer From Sales" />
-                <ComboBoxItem Content="Direct From CS" />
-                <ComboBoxItem Content="Direct From Customer" />
-                <ComboBoxItem Content="Direct From PB" />
-                <ComboBoxItem Content="Direct From Sales" />
             </ComboBox>
             <Label Grid.Column="8" Margin="10,8,0,0" Content="Customer Type:" />
             <ComboBox x:Name="cCustomerTypeBox" Grid.Column="9" HorizontalAlignment="Left" Margin="0,9,0,0" VerticalAlignment="Top" Width="117" Height="25">
                 <ComboBoxItem Content="" />
-                <ComboBoxItem Content="Conference" />
-                <ComboBoxItem Content="Follow-Up" />
-                <ComboBoxItem Content="No Customer" />
-                <ComboBoxItem Content="Transfer" />
             </ComboBox>
             <Label Grid.Column="10" Margin="10,8,0,0" Content="Reference Number:" />
             <TextBox x:Name="txtReferenceNumber" Grid.Column="11" Margin="0,9,0,0" />

@@ -29,6 +29,7 @@ namespace Day_Logger
         public MainWindow()
         {
             InitializeWindow();
+            InitializeConfig();
         }
 
         /// <summary>
@@ -78,6 +79,23 @@ namespace Day_Logger
             dispTimer.Start();
 
             AddHandler(Keyboard.KeyDownEvent, (System.Windows.Input.KeyEventHandler)HandleSaveKeyEvent);
+        }
+        #endregion
+        #region Window Functions
+        private void InitializeConfig()
+        {
+            //List<string> statusConf = ConfigOperations.GetStatusConfig();
+            List<string> callTypeConf = ConfigOperations.GetCallTypeConfig();
+            List<string> customerTypeConf = ConfigOperations.GetCustomerTypeConfig();
+
+            foreach (string s in ConfigOperations.GetStatusConfig())
+                cStatusBox.Items.Add(s);
+
+            foreach (string s in callTypeConf)
+                cCallTypeBox.Items.Add(s);
+
+            foreach (string s in customerTypeConf)
+                cCustomerTypeBox.Items.Add(s);
         }
         #endregion
         #region Button Events

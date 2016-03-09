@@ -53,6 +53,10 @@ namespace Day_Logger
             return result;
         }
 
+        /// <summary>
+        /// This function is used to get the path to a file to save.
+        /// </summary>
+        /// <returns type="string">The path to the file.</returns>
         public static string GetSaveFile()
         {
             SaveFileDialog dlg = new SaveFileDialog();
@@ -68,6 +72,10 @@ namespace Day_Logger
             return String.Empty;
         }
 
+        /// <summary>
+        /// This function is used to get the path to a file to open.
+        /// </summary>
+        /// <returns type="string">The path to the file.</returns>
         public static string OpenFile()
         {
             OpenFileDialog dlg = new OpenFileDialog();
@@ -82,6 +90,13 @@ namespace Day_Logger
                 return String.Empty;
         }
 
+        /// <summary>
+        /// This function is used to build the description string.
+        /// </summary>
+        /// <param name="callType">The call type.</param>
+        /// <param name="cusType">The customer type.</param>
+        /// <param name="refNum">The reference number.</param>
+        /// <returns type="string">The description string.</returns>
         public static string GetDesString(string callType, string cusType, string refNum)
         {
             if (callType == String.Empty)
