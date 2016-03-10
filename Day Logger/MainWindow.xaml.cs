@@ -39,6 +39,7 @@ namespace Day_Logger
         public MainWindow(string filePath)
         {
             InitializeWindow();
+            InitializeConfig();
             FilePath = filePath;
 
             // Get the stream to initialize the window with.
@@ -53,7 +54,7 @@ namespace Day_Logger
 
                 string[] res = input.Split(',');
 
-                this.lvStamps.Items.Add(new TimeStamp()
+                (Resources["StmpDs"] as TimeStampCollection).AddStamp(new TimeStamp()
                 {
                     STime = res[0],
                     ETime = res[1],
@@ -79,22 +80,27 @@ namespace Day_Logger
             dispTimer.Start();
 
             AddHandler(Keyboard.KeyDownEvent, (System.Windows.Input.KeyEventHandler)HandleSaveKeyEvent);
+
+            this.dgStamps.PreviewMouseLeftButtonDown +=
+                new MouseButtonEventHandler(dgStamps_PreviewMouseLeftButtonDown);
+
+            this.dgStamps.Drop += new DragEventHandler(dgStamps_Drop);
         }
         #endregion
         #region Window Functions
+        /// <summary>
+        /// This function is used to initialize the combo boxes from the applicaton
+        ///     configuration file.
+        /// </summary>
         private void InitializeConfig()
         {
-            //List<string> statusConf = ConfigOperations.GetStatusConfig();
-            List<string> callTypeConf = ConfigOperations.GetCallTypeConfig();
-            List<string> customerTypeConf = ConfigOperations.GetCustomerTypeConfig();
-
             foreach (string s in ConfigOperations.GetStatusConfig())
                 cStatusBox.Items.Add(s);
 
-            foreach (string s in callTypeConf)
+            foreach (string s in ConfigOperations.GetCallTypeConfig())
                 cCallTypeBox.Items.Add(s);
 
-            foreach (string s in customerTypeConf)
+            foreach (string s in ConfigOperations.GetCustomerTypeConfig())
                 cCustomerTypeBox.Items.Add(s);
         }
         #endregion
@@ -119,7 +125,7 @@ namespace Day_Logger
             {
                 addition.Duration = TimestampFunctions.CalculateDuration(txtStartTime.Text, txtEndTime.Text);
 
-                this.lvStamps.Items.Add(addition);
+                (Resources["StmpDs"] as TimeStampCollection).AddStamp(addition);
 
                 txtStartTime.Text = txtEndTime.Text;
             }
@@ -140,13 +146,20 @@ namespace Day_Logger
         {
             List<TimeStamp> rList = new List<TimeStamp>();
 
-            foreach (TimeStamp tStamp in this.lvStamps.SelectedItems)
+            try
             {
-                rList.Add(tStamp);
+                foreach (TimeStamp tStamp in dgStamps.SelectedItems)
+                {
+                    rList.Add(tStamp);
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Cannot delete that item", "Error");
             }
 
             for (int i = 0; i < rList.Count; ++i)
-                lvStamps.Items.Remove(rList[i]);
+                (Resources["StmpDs"] as TimeStampCollection).Remove(rList[i]);
 
             this.changed = true;
         }
@@ -172,13 +185,13 @@ namespace Day_Logger
 
             List<TimeStamp> rList = new List<TimeStamp>();
 
-            foreach (TimeStamp tStamp in lvStamps.Items)
+            foreach (TimeStamp tStamp in dgStamps.Items)
             {
                 rList.Add(tStamp);
             }
 
             for (int i = 0; i < rList.Count; ++i)
-                lvStamps.Items.Remove(rList[i]);
+                dgStamps.Items.Remove(rList[i]);
 
             txtStartTime.Text = String.Empty;
             changed = false;
@@ -202,6 +215,7 @@ namespace Day_Logger
 
                 // Show the new window.
                 mWin.Show();
+                this.Close();
             }
         }
 
@@ -214,9 +228,16 @@ namespace Day_Logger
         {
             StringBuilder sString = new StringBuilder("Start Time, End Time, Duration, Status\r\n");
 
-            foreach (TimeStamp tStamp in lvStamps.Items)
+            try
             {
-                sString.AppendLine(tStamp.STime + "," + tStamp.ETime + "," + tStamp.Duration + "," + tStamp.Status + "," + tStamp.Description);
+                foreach (TimeStamp tStamp in dgStamps.Items)
+                {
+                    sString.AppendLine(tStamp.STime + "," + tStamp.ETime + "," + tStamp.Duration + "," + tStamp.Status + "," + tStamp.Description);
+                }
+            }
+            catch
+            {
+
             }
 
             // Check to see if FilePath has been determined previously.
@@ -284,22 +305,6 @@ namespace Day_Logger
             }
         }
         #endregion
-        #region ListView Events
-        private void OnText_DoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            TextBox textBox = sender as TextBox;
-            textBox.IsReadOnly = false;
-            textBox.SelectAll();
-            textBox.Background = new SolidColorBrush(Colors.White);
-        }
-
-        private void OnText_LostFocus(object sender, RoutedEventArgs e)
-        {
-            TextBox textBox = sender as TextBox;
-            textBox.IsReadOnly = true;
-            textBox.Background = new SolidColorBrush(Colors.WhiteSmoke);
-        }
-        #endregion
         #region Timer Events
         /// <summary>
         /// The event handler for the tick event, which goes over once a minute.
@@ -315,9 +320,124 @@ namespace Day_Logger
             CommandManager.InvalidateRequerySuggested();
         }
         #endregion
+        #region Drag And Drop
+        /// <summary>
+        /// This function is used to verify that the mouse is on the
+        ///     target row that will be moved.
+        /// </summary>
+        /// <param name="target">The Visual target row.</param>
+        /// <param name="pos">The DragDropPosition of the mouse.</param>
+        /// <returns></returns>
+        private bool IsMouseOnTargetRow(Visual target, GetDragDropPosition pos)
+        {
+            if (target == null)
+                return false;
+
+            Rect posBounds = VisualTreeHelper.GetDescendantBounds(target);
+            Point mousePos = pos((IInputElement)target);
+            return posBounds.Contains(mousePos);
+        }
+
+        /// <summary>
+        /// This function is used to get the DataGridRow that will be
+        ///     moved.
+        /// </summary>
+        /// <param name="index">The index for the row.</param>
+        /// <returns type="DataGridRow">The DataGridRow if one is found, otherwise NULL</returns>
+        private DataGridRow GetDataGridRowItem(int index)
+        {
+            if (dgStamps.ItemContainerGenerator.Status
+                != System.Windows.Controls.Primitives.GeneratorStatus.ContainersGenerated)
+                return null;
+
+            return dgStamps.ItemContainerGenerator.ContainerFromIndex(index) as DataGridRow;
+        }
+
+        /// <summary>
+        /// This function is used to get the current row index
+        ///     for the drag and drop position when the user hovers over one.
+        /// </summary>
+        /// <param name="pos">The DragDropPosition.</param>
+        /// <returns type="int">The index for the current row item, -1 if no row is hovered over.</returns>
+        private int GetDataGridItemCurrentRowIndex(GetDragDropPosition pos)
+        {
+            int curIndex = -1;
+            for (int i = 0; i < dgStamps.Items.Count; i++)
+            {
+                DataGridRow itm = GetDataGridRowItem(i);
+                if (IsMouseOnTargetRow(itm, pos))
+                {
+                    curIndex = i;
+                    break;
+                }
+            }
+            return curIndex;
+        }
+
+        /// <summary>
+        /// This function is used to get the position of the mouse when hovering with a
+        ///     row to move.
+        /// </summary>
+        /// <param name="sender">The Event sender.</param>
+        /// <param name="e">The MouseButtonEventArgs.</param>
+        private void dgStamps_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            prevRowIndex = GetDataGridItemCurrentRowIndex(e.GetPosition);
+
+            if (prevRowIndex < 0)
+                return;
+
+            dgStamps.SelectedIndex = prevRowIndex;
+
+            TimeStamp selectedStamp = dgStamps.Items[prevRowIndex] as TimeStamp;
+
+            if (selectedStamp == null)
+                return;
+
+            DragDropEffects dragDropEffects = DragDropEffects.Move;
+
+            if(DragDrop.DoDragDrop(dgStamps, selectedStamp, dragDropEffects) != DragDropEffects.None)
+            {
+                dgStamps.SelectedItem = selectedStamp;
+            }
+        }
+
+        /// <summary>
+        /// This function is used to move a timestamp in the DataGrid
+        ///     when the user moves it to another row.
+        /// </summary>
+        /// <param name="sender">The Event sender.</param>
+        /// <param name="e">The DragEventArgs.</param>
+        private void dgStamps_Drop(object sender, DragEventArgs e)
+        {
+            if (prevRowIndex < 0)
+                return;
+
+            int index = this.GetDataGridItemCurrentRowIndex(e.GetPosition);
+
+            if (index < 0 || index == prevRowIndex)
+                return;
+
+            if (index == dgStamps.Items.Count - 1   )
+            {
+                MessageBox.Show("This row-index cannot be used for Drop Operations");
+                return;
+            }
+
+            TimeStampCollection stamp = Resources["StmpDs"] as TimeStampCollection;
+
+            TimeStamp movedStmp = stamp[prevRowIndex];
+            stamp.RemoveAt(prevRowIndex);
+            stamp.Insert(index, movedStmp);
+        }
+        #endregion
+        #region Delegates
+        public delegate Point GetDragDropPosition(IInputElement element);
+        #endregion
         #region Variables
         private string FilePath;
         private bool changed = false;
+        private int prevRowIndex;
         #endregion
     }
 }
