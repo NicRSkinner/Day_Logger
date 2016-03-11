@@ -1,0 +1,10 @@
+PURPOSE OF THIS FILE: This file is for storing a list of features that I plan on getting working, and the priority that they are put in.
+
+- Auto-populate Start Time TextBox with the end time of the last item in the DataGrid.
+- Recalculate the duration field in the DataGrid when either the start time or the end time has been changed.
+  - Duration cannot be changed directly.
+- Reset status, call type, customer type, and reference number boxes when a new stamp is added.
+- Add logging for debug purposes.
+- Add real-time debugging.
+- Add change handler for undo/redo and other operations when the user has edited any timestamps.
+- The name of the window should change to "Day Logger*" (added *) when the file has been edited.
