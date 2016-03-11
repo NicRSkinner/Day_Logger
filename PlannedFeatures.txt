@@ -11,3 +11,5 @@ PURPOSE OF THIS FILE: This file is for storing a list of features that I plan on
 - Organize the time stamp fields to be in a more "vertical" orientation, split onto 2 lines.
 - Add ability to change configuration settings within the application.
   - Allow user to create profiles for different configurations.
+- Add button to make a custom status/call type/customer type for the next timestamp.
+  - Reset the custom box when a timestamp is added.
