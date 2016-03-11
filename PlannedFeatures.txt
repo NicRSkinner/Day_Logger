@@ -1,4 +1,4 @@
-PURPOSE OF THIS FILE: This file is for storing a list of features that I plan on getting working, and the priority that they are put in.
+PURPOSE OF THIS FILE: This file is for storing a list of features that I plan on getting working.
 
 - Auto-populate Start Time TextBox with the end time of the last item in the DataGrid.
 - Recalculate the duration field in the DataGrid when either the start time or the end time has been changed.
@@ -8,3 +8,4 @@ PURPOSE OF THIS FILE: This file is for storing a list of features that I plan on
 - Add real-time debugging.
 - Add change handler for undo/redo and other operations when the user has edited any timestamps.
 - The name of the window should change to "Day Logger*" (added *) when the file has been edited.
+- Organize the time stamp fields to be in a more "vertical" orientation, split onto 2 lines.
