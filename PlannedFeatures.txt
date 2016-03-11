@@ -9,3 +9,5 @@ PURPOSE OF THIS FILE: This file is for storing a list of features that I plan on
 - Add change handler for undo/redo and other operations when the user has edited any timestamps.
 - The name of the window should change to "Day Logger*" (added *) when the file has been edited.
 - Organize the time stamp fields to be in a more "vertical" orientation, split onto 2 lines.
+- Add ability to change configuration settings within the application.
+  - Allow user to create profiles for different configurations.
