@@ -71,6 +71,7 @@ namespace Day_Logger
         private void InitializeWindow()
         {
             InitializeComponent();
+            changeHandler = new ChangeHandler();
 
             txtEndTime.Text = DateTime.Now.ToString("HH:mm");
 
@@ -79,12 +80,14 @@ namespace Day_Logger
             dispTimer.Interval = new TimeSpan(0, 0, 10);
             dispTimer.Start();
 
-            AddHandler(Keyboard.KeyDownEvent, (System.Windows.Input.KeyEventHandler)HandleSaveKeyEvent);
+            AddHandler(Keyboard.KeyDownEvent, (System.Windows.Input.KeyEventHandler)HandleKeyEvent);
 
             this.dgStamps.PreviewMouseLeftButtonDown +=
                 new MouseButtonEventHandler(dgStamps_PreviewMouseLeftButtonDown);
 
             this.dgStamps.Drop += new DragEventHandler(dgStamps_Drop);
+
+            changeHandler.Changed += new ChangeHandler.ChangedEventHandler(HandleChangedEvent);
         }
         #endregion
         #region Window Functions
@@ -102,6 +105,16 @@ namespace Day_Logger
 
             foreach (string s in ConfigOperations.GetCustomerTypeConfig())
                 cCustomerTypeBox.Items.Add(s);
+
+            cStatusBox.Items.Add("");
+            cCallTypeBox.Items.Add("");
+            cCustomerTypeBox.Items.Add("");
+        }
+
+        private void HandleChangedEvent(object sender, RoutedEventArgs e)
+        {
+            this.Title = "Day Logger*";
+            this.changed = true;
         }
         #endregion
         #region Button Events
@@ -132,9 +145,12 @@ namespace Day_Logger
             catch
             {
                 System.Windows.MessageBox.Show("FORMATTING FOR TIMESTAMP INCORRECT, PLEASE USE HH:MM");
+                return;
             }
 
-            this.changed = true;
+            TimeStampCollection stamps = (Resources["StmpDs"] as TimeStampCollection);
+            changeHandler.AddChange((x, y) => { stamps.RemoveAt(x); },
+                                    (x, y) => { stamps.Insert(x, y); }, stamps.Count - 1, addition);
         }
 
         /// <summary>
@@ -160,8 +176,6 @@ namespace Day_Logger
 
             for (int i = 0; i < rList.Count; ++i)
                 (Resources["StmpDs"] as TimeStampCollection).Remove(rList[i]);
-
-            this.changed = true;
         }
         #endregion
         #region Menu Events
@@ -175,10 +189,12 @@ namespace Day_Logger
             if (changed == true)
             {
                 MessageBoxResult result = System.Windows.MessageBox.Show("Would you like to save the current changes?", "Confirm Changes",
-                                MessageBoxButton.YesNo);
+                                MessageBoxButton.YesNoCancel);
 
                 if (result == MessageBoxResult.Yes)
                     OnSave_Click(this, new RoutedEventArgs());
+                else if (result == MessageBoxResult.Cancel)
+                    return;
             }
 
             FilePath = String.Empty;
@@ -252,6 +268,7 @@ namespace Day_Logger
             {
                 File.WriteAllText(FilePath, sString.ToString());
                 changed = false;
+                this.Title = "Day Logger";
             }
         }
 
@@ -287,17 +304,25 @@ namespace Day_Logger
         #endregion
         #region Key Events
         /// <summary>
-        /// Handles the CTRL + S keyboard macro to save documents.
+        /// Handles the keyboard macros for interacting with the main window.
         /// </summary>
         /// <param name="sender">The Event sender</param>
         /// <param name="e">The KeyEventArgs for key input</param>
-        private void HandleSaveKeyEvent(object sender, System.Windows.Input.KeyEventArgs e)
+        private void HandleKeyEvent(object sender, System.Windows.Input.KeyEventArgs e)
         {
             switch(e.Key)
             {
                 case Key.S:
                     if (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl))
                         OnSave_Click(this, new RoutedEventArgs());
+                    break;
+                case Key.Y:
+                    if (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl))
+                        changeHandler.Redo();
+                    break;
+                case Key.Z:
+                    if (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl))
+                        changeHandler.Undo();
                     break;
                 case Key.Delete:
                     btnRemoveStamp_Click(this, new RoutedEventArgs());
@@ -418,7 +443,7 @@ namespace Day_Logger
             if (index < 0 || index == prevRowIndex)
                 return;
 
-            if (index == dgStamps.Items.Count - 1   )
+            if (index == dgStamps.Items.Count - 1)
             {
                 MessageBox.Show("This row-index cannot be used for Drop Operations");
                 return;
@@ -438,6 +463,7 @@ namespace Day_Logger
         private string FilePath;
         private bool changed = false;
         private int prevRowIndex;
+        private ChangeHandler changeHandler;
         #endregion
     }
 }
