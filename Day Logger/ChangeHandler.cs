@@ -7,10 +7,21 @@ using System.Windows;
 
 namespace Day_Logger
 {
-    public class ChangeHandler
+    public interface IChangeHandler
+    {
+        void AddChange(Action undo, Action redo);
+        void AddChange(Change chg);
+        void Undo();
+        void Redo();
+    }
+
+    public class DataGridChangeHandler : IChangeHandler
     {
         #region Initializers
-        public ChangeHandler()
+        /// <summary>
+        /// Default initializer for the DataGridChangeHandler class.
+        /// </summary>
+        public DataGridChangeHandler()
         {
 
         }
@@ -21,16 +32,12 @@ namespace Day_Logger
         /// </summary>
         /// <param name="undo">The function to be called when Undo is invoked.</param>
         /// <param name="redo">The function to be called when Redo is invoked.</param>
-        /// <param name="index">The index of the TimeStamp in the DataGrid object.</param>
-        /// <param name="stamp">The TimeStamp that was changed.</param>
-        public void AddChange(Action<int, TimeStamp> undo, Action<int, TimeStamp> redo, int index, TimeStamp stamp)
+        public void AddChange(Action undo, Action redo)
         {
             Change chg = new Change()
             {
                 UndoFunc = undo,
-                RedoFunc = redo,
-                index = index,
-                stamp = stamp
+                RedoFunc = redo
             };
 
             AddChange(chg);
@@ -60,7 +67,7 @@ namespace Day_Logger
         }
 
         /// <summary>
-        /// This function undos the change that was made in teh DataGrid
+        /// This function undoes the change that was made in the DataGrid.
         /// </summary>
         public void Undo()
         {
@@ -68,9 +75,12 @@ namespace Day_Logger
                 return;
 
             Change chg = lUndo.Pop();
-            chg.UndoFunc.Invoke(chg.index, chg.stamp);
+            chg.UndoFunc.Invoke();
 
             lRedo.Push(chg);
+
+            // Raise the changed event.
+            Onchanged();
         }
 
         /// <summary>
@@ -82,7 +92,12 @@ namespace Day_Logger
                 return;
 
             Change chg = lRedo.Pop();
-            chg.RedoFunc.Invoke(chg.index, chg.stamp);
+            chg.RedoFunc.Invoke();
+
+            lUndo.Push(chg);
+
+            // Raise the changed event.
+            Onchanged();
         }
 
         /// <summary>
@@ -102,14 +117,12 @@ namespace Day_Logger
         public delegate void ChangedEventHandler(object sender, RoutedEventArgs e);
         private Stack<Change> lUndo;
         private Stack<Change> lRedo;
-        #endregion
+        #endregion  
     }
 
     public class Change
     {
-        public Action<int, TimeStamp> UndoFunc { get; set; }
-        public Action<int, TimeStamp> RedoFunc { get; set; }
-        public int index { get; set; }
-        public TimeStamp stamp { get; set; }
+        public Action UndoFunc { get; set; }
+        public Action RedoFunc { get; set; }
     }
 }

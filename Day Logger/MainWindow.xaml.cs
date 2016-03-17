@@ -71,7 +71,7 @@ namespace Day_Logger
         private void InitializeWindow()
         {
             InitializeComponent();
-            changeHandler = new ChangeHandler();
+            changeHandler = new DataGridChangeHandler();
 
             txtEndTime.Text = DateTime.Now.ToString("HH:mm");
 
@@ -87,7 +87,7 @@ namespace Day_Logger
 
             this.dgStamps.Drop += new DragEventHandler(dgStamps_Drop);
 
-            changeHandler.Changed += new ChangeHandler.ChangedEventHandler(HandleChangedEvent);
+            changeHandler.Changed += new DataGridChangeHandler.ChangedEventHandler(HandleChangedEvent);
         }
         #endregion
         #region Window Functions
@@ -125,6 +125,8 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs</param>
         private void btnAddStamp_Click(object sender, RoutedEventArgs e)
         {
+            TimeStampCollection tS = (Resources["StmpDs"] as TimeStampCollection);
+
             TimeStamp addition = new TimeStamp();
 
             addition.STime = txtStartTime.Text;
@@ -149,8 +151,8 @@ namespace Day_Logger
             }
 
             TimeStampCollection stamps = (Resources["StmpDs"] as TimeStampCollection);
-            changeHandler.AddChange((x, y) => { stamps.RemoveAt(x); },
-                                    (x, y) => { stamps.Insert(x, y); }, stamps.Count - 1, addition);
+            changeHandler.AddChange(() => { stamps.RemoveAt(stamps.Count - 1); },
+                                    () => { stamps.Insert(stamps.Count, addition); });
         }
 
         /// <summary>
@@ -463,7 +465,7 @@ namespace Day_Logger
         private string FilePath;
         private bool changed = false;
         private int prevRowIndex;
-        private ChangeHandler changeHandler;
+        private DataGridChangeHandler changeHandler;
         #endregion
     }
 }

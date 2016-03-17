@@ -19,8 +19,22 @@
                     <MenuItem Header="_New" Click="OnNew_Click"/>
                     <MenuItem Header="_Open" Click="OnOpen_Click"/>
                     <MenuItem Header="_Save"  Click="OnSave_Click"/>
-                    <MenuItem Header="_Save As" Click="OnSaveAs_Click"/>
+                    <MenuItem Header="_Save As (No Implementation)" Click="OnSaveAs_Click"/>
                     <MenuItem Header="_Exit" Click="OnExit_Click"/>
+                </MenuItem>
+                <MenuItem Header="_Edit">
+                    <MenuItem Header="_Undo" />
+                    <MenuItem Header="_Redo" />
+                    <MenuItem Header="_Cut" />
+                    <MenuItem Header="_Copy" />
+                    <MenuItem Header="_Paste" />
+                </MenuItem>
+                <MenuItem Header="_Options">
+                    <MenuItem Header="_Preferences" />
+                    <MenuItem Header="_Profile">
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="_Help">
                 </MenuItem>
             </Menu>
         </DockPanel>
