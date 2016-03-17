@@ -23,34 +23,43 @@ namespace Day_Logger
         /// </summary>
         /// <param name="start">The starting time FORMAT: HH:MM</param>
         /// <param name="end">The ending time FORMAT: HH:MM</param>
-        /// <returns>The duration between the start and ending times FORMAT: HH:MM</returns>
+        /// <returns type="string">The duration between the start and ending times FORMAT: HH:MM
+        ///          NOTE: WILL RETURN ##:## IF FORMAT IS INVALID.</returns>
         public static string CalculateDuration(string start, string end)
         {
+            if(String.IsNullOrEmpty(start) || String.IsNullOrEmpty(end))
+            {
+                return "##:##";
+            }
+
             int hr = 0;
             int min = 0;
 
-            try
+            string[] startSpl = start.Split(new char[] { ':' });
+            string[] endSpl = end.Split(new char[] { ':' });
+
+            int hr1, hr2, min1, min2;
+            bool bh1, bh2, bm1, bm2;
+
+            bh1 = Int32.TryParse(startSpl[0], out hr1);
+            bh2 = Int32.TryParse(endSpl[0], out hr2);
+
+            bm1 = Int32.TryParse(startSpl[1], out min1);
+            bm2 = Int32.TryParse(endSpl[1], out min2);
+            
+            if(!bh1 || !bh2 || !bm1 || !bm2)
+                return "##:##";
+
+            hr = hr2 - hr1;
+            min = min2 - min1;
+
+            if (min < 0)
             {
-                string[] startSpl = start.Split(new char[] { ':' });
-                string[] endSpl = end.Split(new char[] { ':' });
-
-                hr = Convert.ToInt32(endSpl[0]) - Convert.ToInt32(startSpl[0]);
-                min = Convert.ToInt32(endSpl[1]) - Convert.ToInt32(startSpl[1]);
-
-                if (min < 0)
-                {
-                    hr -= 1;
-                    min += 60;
-                }
-            }
-            catch (Exception e)
-            {
-                throw e;
+                hr -= 1;
+                min += 60;
             }
 
-            string result = hr + ":" + (min == 0 ? "00" : (min < 10) ? "0" + Convert.ToString(min) : Convert.ToString(min));
-
-            return result;
+             return (hr + ":" + (min == 0 ? "00" : (min < 10) ? "0" + Convert.ToString(min) : Convert.ToString(min)));
         }
 
         /// <summary>
@@ -68,6 +77,16 @@ namespace Day_Logger
             {
                 return dlg.FileName;
             }
+
+            return String.Empty;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns type="string"></returns>
+        public static string GetSaveAsFile()
+        {
 
             return String.Empty;
         }

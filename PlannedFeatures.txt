@@ -1,16 +1,21 @@
 PURPOSE OF THIS FILE: This file is for storing a list of features that I plan on getting working.
 
-- Auto-populate Start Time TextBox with the end time of the last item in the DataGrid.
-- Recalculate the duration field in the DataGrid when either the start time or the end time has been changed.
-  - Duration cannot be changed directly.
 - Reset status, call type, customer type, and reference number boxes when a new stamp is added.
 - Add logging for debug purposes.
 - Add real-time debugging.
-- Add change handler for undo/redo and other operations when the user has edited any timestamps.
-- The name of the window should change to "Day Logger*" (added *) when the file has been edited.
-- Organize the time stamp fields to be in a more "vertical" orientation, split onto 2 lines.
+- Integrate ChangeHandler into main program for undo/redo functionality.
 - Add ability to change configuration settings within the application.
   - Allow user to create profiles for different configurations.
 - Add button to make a custom status/call type/customer type for the next timestamp.
   - Reset the custom box when a timestamp is added.
 - Add ability to duplicate a selected punch (Button?)
+- Window name should be the name of the file that the user is editing. (Ex. "Day Logger - 01/01/2000")
+- Add Field to calculate the average duration of the time fields when any of them are changed.
+
+COMPLETED:
+
+- Auto-populate Start Time TextBox with the end time of the last item in the DataGrid.
+- The name of the window should change to "Day Logger*" (added *) when the file has been edited.
+- Organize the time stamp fields to be in a more "vertical" orientation, split onto 2 lines.
+- Recalculate the duration field in the DataGrid when either the start time or the end time has been changed.
+  - Duration cannot be changed directly.

@@ -58,11 +58,16 @@ namespace Day_Logger
                 {
                     STime = res[0],
                     ETime = res[1],
-                    Duration = res[2],
                     Status = res[3],
                     Description = res[4]
                 });
             }
+
+            // Set txtStartTime to be the end time of the last timestamp.
+            int itemNo = (Resources["StmpDs"] as TimeStampCollection).Count - 1;
+
+            if (itemNo > 0)
+                txtStartTime.Text = (dgStamps.Items[itemNo] as TimeStamp).ETime;
         }
 
         /// <summary>
@@ -84,8 +89,8 @@ namespace Day_Logger
 
             this.dgStamps.PreviewMouseLeftButtonDown +=
                 new MouseButtonEventHandler(dgStamps_PreviewMouseLeftButtonDown);
-
             this.dgStamps.Drop += new DragEventHandler(dgStamps_Drop);
+            this.dgStamps.CellEditEnding += dgStamps_CellEditEnding;
 
             changeHandler.Changed += new DataGridChangeHandler.ChangedEventHandler(HandleChangedEvent);
         }
@@ -113,8 +118,38 @@ namespace Day_Logger
 
         private void HandleChangedEvent(object sender, RoutedEventArgs e)
         {
-            this.Title = "Day Logger*";
+            this.Title += "*";  // Visual signal that the file has been changed.
             this.changed = true;
+        }
+        #endregion
+        #region DataGrid Events
+        /// <summary>
+        /// This function responds to the CellEditEnding event to update the DataGrid columns.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The cell that was changed.</param>
+        private void dgStamps_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            var classInstance = e.EditingElement.DataContext;
+            string newValue = (e.EditingElement as TextBox).Text;
+
+            TimeStamp stamp = (e.Row.Item as TimeStamp);
+
+            switch(e.Column.Header.ToString())
+            {
+                case "Start Time":
+                    stamp.STime = newValue;
+                    break;
+                case "End Time":
+                    stamp.ETime = newValue;
+                    break;
+                case "Status":
+                    stamp.Status = newValue;
+                    break;
+                case "Description":
+                    stamp.Description = newValue;
+                    break;
+            }
         }
         #endregion
         #region Button Events
@@ -136,19 +171,9 @@ namespace Day_Logger
                                                                    cCustomerTypeBox.SelectionBoxItem.ToString(),
                                                                    txtReferenceNumber.Text);
 
-            try
-            {
-                addition.Duration = TimestampFunctions.CalculateDuration(txtStartTime.Text, txtEndTime.Text);
+            (Resources["StmpDs"] as TimeStampCollection).AddStamp(addition);
 
-                (Resources["StmpDs"] as TimeStampCollection).AddStamp(addition);
-
-                txtStartTime.Text = txtEndTime.Text;
-            }
-            catch
-            {
-                System.Windows.MessageBox.Show("FORMATTING FOR TIMESTAMP INCORRECT, PLEASE USE HH:MM");
-                return;
-            }
+            txtStartTime.Text = txtEndTime.Text;
 
             TimeStampCollection stamps = (Resources["StmpDs"] as TimeStampCollection);
             changeHandler.AddChange(() => { stamps.RemoveAt(stamps.Count - 1); },
@@ -246,16 +271,10 @@ namespace Day_Logger
         {
             StringBuilder sString = new StringBuilder("Start Time, End Time, Duration, Status\r\n");
 
-            try
+            for (int i = 0; i < dgStamps.Items.Count - 1; ++i )
             {
-                foreach (TimeStamp tStamp in dgStamps.Items)
-                {
-                    sString.AppendLine(tStamp.STime + "," + tStamp.ETime + "," + tStamp.Duration + "," + tStamp.Status + "," + tStamp.Description);
-                }
-            }
-            catch
-            {
-
+                TimeStamp tStamp = (dgStamps.Items[i] as TimeStamp);
+                sString.AppendLine(tStamp.STime + "," + tStamp.ETime + "," + tStamp.Duration + "," + tStamp.Status + "," + tStamp.Description);
             }
 
             // Check to see if FilePath has been determined previously.
@@ -302,6 +321,16 @@ namespace Day_Logger
             }
 
             Application.Current.Shutdown();
+        }
+
+        private void OnUndo_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OnRedo_Click(object sender, RoutedEventArgs e)
+        {
+
         }
         #endregion
         #region Key Events
