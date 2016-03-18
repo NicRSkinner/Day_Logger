@@ -38,16 +38,23 @@ namespace Day_Logger
         /// <param name="filePath">The file path to get the information from.</param>
         public MainWindow(string filePath)
         {
+            // Initialized the window.
             InitializeWindow();
             InitializeConfig();
+
+            // Set the window's file path.
             FilePath = filePath;
 
             // Get the stream to initialize the window with.
             StreamReader sRead = new StreamReader(filePath);
 
+            // Set the filename to be the name of the file from the given path.
+            this.FileName = System.IO.Path.GetFileName(filePath);
+
             // Position the reader to the second line, as the first is only for the user.
             sRead.ReadLine();
 
+            // Set the timestamps in the DataGrid with the information from the file.
             while (!sRead.EndOfStream)
             {
                 string input = sRead.ReadLine();
@@ -66,8 +73,10 @@ namespace Day_Logger
             // Set txtStartTime to be the end time of the last timestamp.
             int itemNo = (Resources["StmpDs"] as TimeStampCollection).Count - 1;
 
-            if (itemNo > 0)
+            if (itemNo >= 0)
                 txtStartTime.Text = (dgStamps.Items[itemNo] as TimeStamp).ETime;
+
+            this.Title = FileName + " - Day Logger";
         }
 
         /// <summary>
@@ -118,7 +127,10 @@ namespace Day_Logger
 
         private void HandleChangedEvent(object sender, RoutedEventArgs e)
         {
-            this.Title += "*";  // Visual signal that the file has been changed.
+            // Make sure the asterisk was not already added for the change.
+            if (!this.Title.EndsWith("*"))
+                this.Title += "*";
+
             this.changed = true;
         }
         #endregion
@@ -228,16 +240,22 @@ namespace Day_Logger
 
             List<TimeStamp> rList = new List<TimeStamp>();
 
-            foreach (TimeStamp tStamp in dgStamps.Items)
+            try
             {
-                rList.Add(tStamp);
+                foreach (TimeStamp tStamp in dgStamps.Items)
+                {
+                    rList.Add(tStamp);
+                }
             }
+            catch { }
 
             for (int i = 0; i < rList.Count; ++i)
                 dgStamps.Items.Remove(rList[i]);
 
             txtStartTime.Text = String.Empty;
             changed = false;
+            this.Title = "New Document - Day Logger";
+            this.FileName = "New Document";
         }
 
         /// <summary>
@@ -269,11 +287,15 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs</param>
         private void OnSave_Click(object sender, RoutedEventArgs e)
         {
+            // Create the string for the file, starting with the header information.
             StringBuilder sString = new StringBuilder("Start Time, End Time, Duration, Status\r\n");
 
+            // Loop through all of the timestamps in the DataGrid.
             for (int i = 0; i < dgStamps.Items.Count - 1; ++i )
             {
                 TimeStamp tStamp = (dgStamps.Items[i] as TimeStamp);
+
+                // Add the TimeStamp information to the file string.
                 sString.AppendLine(tStamp.STime + "," + tStamp.ETime + "," + tStamp.Duration + "," + tStamp.Status + "," + tStamp.Description);
             }
 
@@ -287,9 +309,13 @@ namespace Day_Logger
             // Check FilePath to see if the user hit "cancel"
             if (FilePath != String.Empty)
             {
+                // Write all of the information to the file.
                 File.WriteAllText(FilePath, sString.ToString());
                 changed = false;
-                this.Title = "Day Logger";
+
+                // Set the FileName and the window title.
+                this.FileName = System.IO.Path.GetFileName(FilePath);
+                this.Title = FileName + " - Day Logger";
             }
         }
 
@@ -490,8 +516,9 @@ namespace Day_Logger
         #region Delegates
         public delegate Point GetDragDropPosition(IInputElement element);
         #endregion
-        #region Variables
+        #region Instance Fields
         private string FilePath;
+        private string FileName;
         private bool changed = false;
         private int prevRowIndex;
         private DataGridChangeHandler changeHandler;
