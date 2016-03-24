@@ -111,8 +111,13 @@ namespace Day_Logger
         /// </summary>
         private void InitializeConfig()
         {
+            cAverageSta.Items.Add("All");
+
             foreach (string s in ConfigOperations.GetStatusConfig())
+            {
                 cStatusBox.Items.Add(s);
+                cAverageSta.Items.Add(s);
+            }
 
             foreach (string s in ConfigOperations.GetCallTypeConfig())
                 cCallTypeBox.Items.Add(s);
@@ -134,7 +139,38 @@ namespace Day_Logger
             this.changed = true;
         }
         #endregion
-        #region DataGrid Events
+        #region Averages
+        /// <summary>
+        /// This function recalculates the averages when the ComboBox selection changes.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The RoutedEventArgs.</param>
+        private void cAverageSta_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            TimeStampCollection tStamps = (Resources["StmpDs"] as TimeStampCollection);
+
+            List<string> matchedStamps = new List<string>();
+
+            string currSelected = cAverageSta.SelectedValue.ToString();
+
+            for(int i = 0; i < tStamps.Count; ++i)
+            {
+                TimeStamp currStamp = dgStamps.Items[i] as TimeStamp;
+
+                if (currSelected == "All")
+                    matchedStamps.Add(currStamp.Duration);
+                else
+                {
+                    if (currStamp.Status == currSelected)
+                        matchedStamps.Add(currStamp.Duration);
+                }
+            }
+
+            lAverageDur.Content = TimestampFunctions.CalculateAverageDuration(matchedStamps);
+            lTotalDur.Content = TimestampFunctions.CalculateTotalDuration(matchedStamps);
+        }
+        #endregion
+        #region DataGrid
         /// <summary>
         /// This function responds to the CellEditEnding event to update the DataGrid columns.
         /// </summary>
@@ -163,8 +199,118 @@ namespace Day_Logger
                     break;
             }
         }
+
+        /// <summary>
+        /// This function is used to verify that the mouse is on the
+        ///     target row that will be moved.
+        /// </summary>
+        /// <param name="target">The Visual target row.</param>
+        /// <param name="pos">The DragDropPosition of the mouse.</param>
+        /// <returns type="bool">An indicator as to whether or not the mouse is on the target row.</returns>
+        private bool IsMouseOnTargetRow(Visual target, GetDragDropPosition pos)
+        {
+            if (target == null)
+                return false;
+
+            Rect posBounds = VisualTreeHelper.GetDescendantBounds(target);
+            Point mousePos = pos((IInputElement)target);
+            return posBounds.Contains(mousePos);
+        }
+
+        /// <summary>
+        /// This function is used to get the DataGridRow that will be
+        ///     moved.
+        /// </summary>
+        /// <param name="index">The index for the row.</param>
+        /// <returns type="DataGridRow">The DataGridRow if one is found, otherwise NULL</returns>
+        private DataGridRow GetDataGridRowItem(int index)
+        {
+            if (dgStamps.ItemContainerGenerator.Status
+                != System.Windows.Controls.Primitives.GeneratorStatus.ContainersGenerated)
+                return null;
+
+            return dgStamps.ItemContainerGenerator.ContainerFromIndex(index) as DataGridRow;
+        }
+
+        /// <summary>
+        /// This function is used to get the current row index
+        ///     for the drag and drop position when the user hovers over one.
+        /// </summary>
+        /// <param name="pos">The DragDropPosition.</param>
+        /// <returns type="int">The index for the current row item, -1 if no row is hovered over.</returns>
+        private int GetDataGridItemCurrentRowIndex(GetDragDropPosition pos)
+        {
+            int curIndex = -1;
+            for (int i = 0; i < dgStamps.Items.Count; i++)
+            {
+                DataGridRow itm = GetDataGridRowItem(i);
+                if (IsMouseOnTargetRow(itm, pos))
+                {
+                    curIndex = i;
+                    break;
+                }
+            }
+            return curIndex;
+        }
+
+        /// <summary>
+        /// This function is used to get the position of the mouse when hovering with a
+        ///     row to move.
+        /// </summary>
+        /// <param name="sender">The Event sender.</param>
+        /// <param name="e">The MouseButtonEventArgs.</param>
+        private void dgStamps_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            prevRowIndex = GetDataGridItemCurrentRowIndex(e.GetPosition);
+
+            if (prevRowIndex < 0)
+                return;
+
+            dgStamps.SelectedIndex = prevRowIndex;
+
+            TimeStamp selectedStamp = dgStamps.Items[prevRowIndex] as TimeStamp;
+
+            if (selectedStamp == null)
+                return;
+
+            DragDropEffects dragDropEffects = DragDropEffects.Move;
+
+            if (DragDrop.DoDragDrop(dgStamps, selectedStamp, dragDropEffects) != DragDropEffects.None)
+            {
+                dgStamps.SelectedItem = selectedStamp;
+            }
+        }
+
+        /// <summary>
+        /// This function is used to move a timestamp in the DataGrid
+        ///     when the user moves it to another row.
+        /// </summary>
+        /// <param name="sender">The Event sender.</param>
+        /// <param name="e">The DragEventArgs.</param>
+        private void dgStamps_Drop(object sender, DragEventArgs e)
+        {
+            if (prevRowIndex < 0)
+                return;
+
+            int index = this.GetDataGridItemCurrentRowIndex(e.GetPosition);
+
+            if (index < 0 || index == prevRowIndex)
+                return;
+
+            if (index == dgStamps.Items.Count - 1)
+            {
+                MessageBox.Show("This row-index cannot be used for Drop Operations");
+                return;
+            }
+
+            TimeStampCollection stamp = Resources["StmpDs"] as TimeStampCollection;
+
+            TimeStamp movedStmp = stamp[prevRowIndex];
+            stamp.RemoveAt(prevRowIndex);
+            stamp.Insert(index, movedStmp);
+        }
         #endregion
-        #region Button Events
+        #region Buttons
         /// <summary>
         /// Handles the event for adding timestamps to the ListView.
         /// </summary>
@@ -217,7 +363,7 @@ namespace Day_Logger
                 (Resources["StmpDs"] as TimeStampCollection).Remove(rList[i]);
         }
         #endregion
-        #region Menu Events
+        #region Menu
         /// <summary>
         /// Handle the OnNew event for creating a new document.
         /// </summary>
@@ -359,7 +505,7 @@ namespace Day_Logger
 
         }
         #endregion
-        #region Key Events
+        #region Key Input
         /// <summary>
         /// Handles the keyboard macros for interacting with the main window.
         /// </summary>
@@ -371,15 +517,24 @@ namespace Day_Logger
             {
                 case Key.S:
                     if (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl))
+                    {
                         OnSave_Click(this, new RoutedEventArgs());
+                        e.Handled = true;
+                    }
                     break;
                 case Key.Y:
                     if (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl))
+                    {
                         changeHandler.Redo();
+                        e.Handled = true;
+                    }
                     break;
                 case Key.Z:
                     if (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl))
+                    {
                         changeHandler.Undo();
+                        e.Handled = true;
+                    }
                     break;
                 case Key.Delete:
                     btnRemoveStamp_Click(this, new RoutedEventArgs());
@@ -387,7 +542,7 @@ namespace Day_Logger
             }
         }
         #endregion
-        #region Timer Events
+        #region Timer
         /// <summary>
         /// The event handler for the tick event, which goes over once a minute.
         /// </summary>
@@ -400,117 +555,6 @@ namespace Day_Logger
 
             // Force the CommandManager to raise the RequerySuggest event.
             CommandManager.InvalidateRequerySuggested();
-        }
-        #endregion
-        #region Drag And Drop
-        /// <summary>
-        /// This function is used to verify that the mouse is on the
-        ///     target row that will be moved.
-        /// </summary>
-        /// <param name="target">The Visual target row.</param>
-        /// <param name="pos">The DragDropPosition of the mouse.</param>
-        /// <returns></returns>
-        private bool IsMouseOnTargetRow(Visual target, GetDragDropPosition pos)
-        {
-            if (target == null)
-                return false;
-
-            Rect posBounds = VisualTreeHelper.GetDescendantBounds(target);
-            Point mousePos = pos((IInputElement)target);
-            return posBounds.Contains(mousePos);
-        }
-
-        /// <summary>
-        /// This function is used to get the DataGridRow that will be
-        ///     moved.
-        /// </summary>
-        /// <param name="index">The index for the row.</param>
-        /// <returns type="DataGridRow">The DataGridRow if one is found, otherwise NULL</returns>
-        private DataGridRow GetDataGridRowItem(int index)
-        {
-            if (dgStamps.ItemContainerGenerator.Status
-                != System.Windows.Controls.Primitives.GeneratorStatus.ContainersGenerated)
-                return null;
-
-            return dgStamps.ItemContainerGenerator.ContainerFromIndex(index) as DataGridRow;
-        }
-
-        /// <summary>
-        /// This function is used to get the current row index
-        ///     for the drag and drop position when the user hovers over one.
-        /// </summary>
-        /// <param name="pos">The DragDropPosition.</param>
-        /// <returns type="int">The index for the current row item, -1 if no row is hovered over.</returns>
-        private int GetDataGridItemCurrentRowIndex(GetDragDropPosition pos)
-        {
-            int curIndex = -1;
-            for (int i = 0; i < dgStamps.Items.Count; i++)
-            {
-                DataGridRow itm = GetDataGridRowItem(i);
-                if (IsMouseOnTargetRow(itm, pos))
-                {
-                    curIndex = i;
-                    break;
-                }
-            }
-            return curIndex;
-        }
-
-        /// <summary>
-        /// This function is used to get the position of the mouse when hovering with a
-        ///     row to move.
-        /// </summary>
-        /// <param name="sender">The Event sender.</param>
-        /// <param name="e">The MouseButtonEventArgs.</param>
-        private void dgStamps_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            prevRowIndex = GetDataGridItemCurrentRowIndex(e.GetPosition);
-
-            if (prevRowIndex < 0)
-                return;
-
-            dgStamps.SelectedIndex = prevRowIndex;
-
-            TimeStamp selectedStamp = dgStamps.Items[prevRowIndex] as TimeStamp;
-
-            if (selectedStamp == null)
-                return;
-
-            DragDropEffects dragDropEffects = DragDropEffects.Move;
-
-            if(DragDrop.DoDragDrop(dgStamps, selectedStamp, dragDropEffects) != DragDropEffects.None)
-            {
-                dgStamps.SelectedItem = selectedStamp;
-            }
-        }
-
-        /// <summary>
-        /// This function is used to move a timestamp in the DataGrid
-        ///     when the user moves it to another row.
-        /// </summary>
-        /// <param name="sender">The Event sender.</param>
-        /// <param name="e">The DragEventArgs.</param>
-        private void dgStamps_Drop(object sender, DragEventArgs e)
-        {
-            if (prevRowIndex < 0)
-                return;
-
-            int index = this.GetDataGridItemCurrentRowIndex(e.GetPosition);
-
-            if (index < 0 || index == prevRowIndex)
-                return;
-
-            if (index == dgStamps.Items.Count - 1)
-            {
-                MessageBox.Show("This row-index cannot be used for Drop Operations");
-                return;
-            }
-
-            TimeStampCollection stamp = Resources["StmpDs"] as TimeStampCollection;
-
-            TimeStamp movedStmp = stamp[prevRowIndex];
-            stamp.RemoveAt(prevRowIndex);
-            stamp.Insert(index, movedStmp);
         }
         #endregion
         #region Delegates

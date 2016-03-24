@@ -11,6 +11,20 @@ namespace Day_Logger
 {
     public class TimeStamp : INotifyPropertyChanged
     {
+        #region Initializers
+        public TimeStamp()
+        {
+
+        }
+
+        public TimeStamp(string sTime, string eTime, string sta, string des)
+        {
+            this.sTime = sTime;
+            this.eTime = eTime;
+            this.status = sta;
+            this.description = des;
+        }
+        #endregion
         #region Accessors
         public string STime
         {

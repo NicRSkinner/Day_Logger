@@ -12,9 +12,7 @@
             <RowDefinition Height="34"/>
             <RowDefinition Height="34"/>
             <RowDefinition Height="34"/>
-            <RowDefinition Height="550"/>
-            <RowDefinition Height="34"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="550*"/>
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0">
             <Menu DockPanel.Dock="Top">
@@ -50,13 +48,7 @@
                 <ColumnDefinition Width="92"/>
                 <ColumnDefinition Width="55"/>
                 <ColumnDefinition Width="179"/>
-                <ColumnDefinition Width="70"/>
-                <ColumnDefinition Width="170"/>
-                <ColumnDefinition Width="103"/>
-                <ColumnDefinition Width="117"/>
-                <ColumnDefinition Width="125"/>
-                <ColumnDefinition Width="110"/>
-                <ColumnDefinition Width="377"/>
+                <ColumnDefinition Width="240"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Margin="10,10,0,0" Content="Start Time:" />
             <TextBox x:Name="txtStartTime" Grid.Column="1" Margin="0,10,0,2" />
@@ -94,7 +86,7 @@
         <TabControl Grid.Row="4" Margin="10,10,10,10">
             <TabItem Header="Time Stamps">
                 <Grid DataContext="{Binding Source={StaticResource StmpDs}}" Margin="0,0,0,0">
-                    <DataGrid x:Name="dgStamps" ItemsSource="{Binding}" Margin="0,0,0,0"
+                    <DataGrid x:Name="dgStamps" ItemsSource="{Binding}" Margin="2,2,2,2"
                       CanUserSortColumns="False" AutoGenerateColumns="False" ColumnWidth="*"
                       SelectionMode="Extended" AllowDrop="True" CanUserResizeRows="False"
                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
@@ -110,7 +102,38 @@
             </TabItem>
             <TabItem Header="Averages">
                 <Grid Margin="0,0,0,0">
-                    
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="0,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="179"/>
+                            <ColumnDefinition Width="128*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Margin="0,0,0,0" Content="Status:"/>
+                        <ComboBox x:Name="cAverageSta" Grid.Column="1" Margin="0,0,0,0" SelectionChanged="cAverageSta_SelectionChanged"/>
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="0,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="105"/>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Margin="0,0,0,0" Content="Total Duration:"/>
+                        <Label x:Name="lTotalDur" Grid.Column="1" Margin="0,0,0,0" Content="00:00"/>
+                    </Grid>
+                    <Grid Grid.Row="2" Margin="0,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="105"/>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Margin="0,0,0,0" Content="Average Duration:"/>
+                        <Label x:Name="lAverageDur" Grid.Column="1" Margin="0,0,0,0" Content="00:00"/>
+                    </Grid>
                 </Grid>
             </TabItem>
         </TabControl>

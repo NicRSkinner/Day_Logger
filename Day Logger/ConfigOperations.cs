@@ -30,7 +30,7 @@ namespace Day_Logger
             bool withinElement = false;
             List<string> retList = new List<string>();
 
-            using (XmlReader reader = XmlReader.Create("Day Logger.config"))
+            using (XmlReader reader = XmlReader.Create("Config/Day Logger.config"))
             {
                 while (reader.Read())
                 {
