@@ -92,11 +92,11 @@
                       SelectionMode="Extended" AllowDrop="True" CanUserResizeRows="False"
                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Binding="{Binding Path=STime}" Header="Start Time" />
-                            <DataGridTextColumn Binding="{Binding Path=ETime}" Header="End Time" />
+                            <DataGridTextColumn Binding="{Binding Path=STime, Mode=TwoWay}" Header="Start Time" />
+                            <DataGridTextColumn Binding="{Binding Path=ETime, Mode=TwoWay}" Header="End Time" />
                             <DataGridTextColumn Binding="{Binding Duration, Mode=OneWay}" Header="Duration" />
-                            <DataGridTextColumn Binding="{Binding Path=Status}" Header="Status" />
-                            <DataGridTextColumn Binding="{Binding Path=Description}" Header="Description" />
+                            <DataGridTextColumn Binding="{Binding Path=Status, Mode=TwoWay}" Header="Status" />
+                            <DataGridTextColumn Binding="{Binding Path=Description, Mode=TwoWay}" Header="Description" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

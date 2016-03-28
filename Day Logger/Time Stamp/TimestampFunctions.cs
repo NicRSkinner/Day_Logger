@@ -84,20 +84,25 @@ namespace Day_Logger
         ///                         NOTE: WILL RETURN ##:## IF FORMAT IS INVALID.</returns>
         public static string CalculateAverageDuration(List<string> stamps)
         {
+            // Validity check
             if (stamps == null || stamps.Count == 0)
                 return "##:##";
 
             string durTotal = CalculateTotalDuration(stamps);
 
+            // Validity check
             if (durTotal == "##:##")
                 return "##:##";
 
             string[] dur = durTotal.Split(':');
 
+            // Convert the total time into minutes.
             int totalMin = (Int32.Parse(dur[0]) * 60) + Int32.Parse(dur[1]);
 
+            // Find the average minutes.
             int avgMin = totalMin / stamps.Count;
 
+            // Convert back into hours and minutes.
             int hrAverage = avgMin / 60;
             int minAverage = avgMin % 60;
 
@@ -112,6 +117,7 @@ namespace Day_Logger
         ///                         NOTE: WILL RETURN ##:## IF FORMAT IS INVALID</returns>
         public static string CalculateTotalDuration(List<string> stamps)
         {
+            // Validity check.
             if (stamps == null || stamps.Count == 0)
                 return "##:##";
 

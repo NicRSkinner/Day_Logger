@@ -100,6 +100,7 @@ namespace Day_Logger
                 new MouseButtonEventHandler(dgStamps_PreviewMouseLeftButtonDown);
             this.dgStamps.Drop += new DragEventHandler(dgStamps_Drop);
             this.dgStamps.CellEditEnding += dgStamps_CellEditEnding;
+            this.dgStamps.PreviewKeyDown += HandleKeyEvent;
 
             changeHandler.Changed += new DataGridChangeHandler.ChangedEventHandler(HandleChangedEvent);
         }
@@ -183,21 +184,40 @@ namespace Day_Logger
 
             TimeStamp stamp = (e.Row.Item as TimeStamp);
 
+            string oldValue;
+            Change cellChange = new Change();
+
             switch(e.Column.Header.ToString())
             {
                 case "Start Time":
+                    oldValue = stamp.STime;
                     stamp.STime = newValue;
+                    cellChange.UndoFunc = () => stamp.STime = oldValue;
+                    cellChange.RedoFunc = () => stamp.STime = newValue;
                     break;
                 case "End Time":
+                    oldValue = stamp.ETime;
                     stamp.ETime = newValue;
+                    cellChange.UndoFunc = () => stamp.ETime = oldValue;
+                    cellChange.RedoFunc = () => stamp.ETime = newValue;
                     break;
                 case "Status":
+                    oldValue = stamp.Status;
                     stamp.Status = newValue;
+                    cellChange.UndoFunc = () => stamp.Status = oldValue;
+                    cellChange.RedoFunc = () => stamp.Status = newValue;
                     break;
                 case "Description":
+                    oldValue = stamp.Description;
                     stamp.Description = newValue;
+                    cellChange.UndoFunc = () => stamp.Description = oldValue;
+                    cellChange.RedoFunc = () => stamp.Description = newValue;
                     break;
+                default:
+                    return;
             }
+
+            changeHandler.AddChange(cellChange);
         }
 
         /// <summary>
@@ -308,6 +328,11 @@ namespace Day_Logger
             TimeStamp movedStmp = stamp[prevRowIndex];
             stamp.RemoveAt(prevRowIndex);
             stamp.Insert(index, movedStmp);
+
+            int prevIndex = prevRowIndex;
+
+            changeHandler.AddChange(() => { stamp.RemoveAt(index); stamp.Insert(prevIndex, movedStmp); },
+                                    () => { stamp.RemoveAt(prevIndex); stamp.Insert(index, movedStmp); });
         }
         #endregion
         #region Buttons
@@ -345,13 +370,14 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs</param>
         private void btnRemoveStamp_Click(object sender, RoutedEventArgs e)
         {
-            List<TimeStamp> rList = new List<TimeStamp>();
+            TimeStampCollection stamps = (Resources["StmpDs"] as TimeStampCollection);
+            Dictionary<int, TimeStamp> stmpList = new Dictionary<int, TimeStamp>();
 
             try
             {
                 foreach (TimeStamp tStamp in dgStamps.SelectedItems)
                 {
-                    rList.Add(tStamp);
+                    stmpList.Add(dgStamps.Items.IndexOf(tStamp), tStamp);
                 }
             }
             catch
@@ -359,8 +385,22 @@ namespace Day_Logger
                 MessageBox.Show("Cannot delete that item", "Error");
             }
 
-            for (int i = 0; i < rList.Count; ++i)
-                (Resources["StmpDs"] as TimeStampCollection).Remove(rList[i]);
+            foreach (TimeStamp tStamp in stmpList.Values)
+                stamps.Remove(tStamp);
+
+            changeHandler.AddChange(() =>
+            {
+                foreach (var stmp in stmpList.OrderBy(i => i.Key))
+                {
+                    stamps.Insert(stmp.Key, stmp.Value);
+                }
+            }, () =>
+            {
+                foreach (var stmp in stmpList.OrderByDescending(i => i.Key))
+                {
+                    stamps.RemoveAt(stmp.Key);
+                }
+            });
         }
         #endregion
         #region Menu
@@ -511,26 +551,28 @@ namespace Day_Logger
         /// </summary>
         /// <param name="sender">The Event sender</param>
         /// <param name="e">The KeyEventArgs for key input</param>
-        private void HandleKeyEvent(object sender, System.Windows.Input.KeyEventArgs e)
+        private void HandleKeyEvent(object sender, KeyEventArgs e)
         {
+            bool isCtrlDown = (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl));
+
             switch(e.Key)
             {
                 case Key.S:
-                    if (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl))
+                    if (isCtrlDown)
                     {
                         OnSave_Click(this, new RoutedEventArgs());
                         e.Handled = true;
                     }
                     break;
                 case Key.Y:
-                    if (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl))
+                    if (isCtrlDown)
                     {
                         changeHandler.Redo();
                         e.Handled = true;
                     }
                     break;
                 case Key.Z:
-                    if (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl))
+                    if (isCtrlDown)
                     {
                         changeHandler.Undo();
                         e.Handled = true;
@@ -538,6 +580,7 @@ namespace Day_Logger
                     break;
                 case Key.Delete:
                     btnRemoveStamp_Click(this, new RoutedEventArgs());
+                    e.Handled = true;
                     break;
             }
         }
