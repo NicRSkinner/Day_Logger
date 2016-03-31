@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Day_Logger.File_Operations;
 
 namespace Day_Logger
 {
@@ -356,6 +357,11 @@ namespace Day_Logger
 
             (Resources["StmpDs"] as TimeStampCollection).AddStamp(addition);
 
+            cStatusBox.Text = "";
+            cCallTypeBox.Text = "";
+            cCustomerTypeBox.Text = "";
+            txtReferenceNumber.Text = "";
+
             txtStartTime.Text = txtEndTime.Text;
 
             TimeStampCollection stamps = (Resources["StmpDs"] as TimeStampCollection);
@@ -452,7 +458,7 @@ namespace Day_Logger
         private void OnOpen_Click(object sender, RoutedEventArgs e)
         {
             // Get the file path for the file to open.
-            string filePath = TimestampFunctions.OpenFile();
+            string filePath = FileOperations.OpenFile();
 
             // Make sure that a file was selected.
             if (filePath != String.Empty)
@@ -473,28 +479,28 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs</param>
         private void OnSave_Click(object sender, RoutedEventArgs e)
         {
-            // Create the string for the file, starting with the header information.
-            StringBuilder sString = new StringBuilder("Start Time, End Time, Duration, Status\r\n");
-
-            // Loop through all of the timestamps in the DataGrid.
-            for (int i = 0; i < dgStamps.Items.Count - 1; ++i )
-            {
-                TimeStamp tStamp = (dgStamps.Items[i] as TimeStamp);
-
-                // Add the TimeStamp information to the file string.
-                sString.AppendLine(tStamp.STime + "," + tStamp.ETime + "," + tStamp.Duration + "," + tStamp.Status + "," + tStamp.Description);
-            }
-
             // Check to see if FilePath has been determined previously.
-            if (FilePath == null || FilePath == String.Empty)
+            if (String.IsNullOrEmpty(FilePath))
             {
                 // Create FilePath if it was not aready determined.
-                FilePath = TimestampFunctions.GetSaveFile();
+                FilePath = FileOperations.GetSaveFile();
             }
 
             // Check FilePath to see if the user hit "cancel"
             if (FilePath != String.Empty)
             {
+                // Create the string for the file, starting with the header information.
+                StringBuilder sString = new StringBuilder("Start Time, End Time, Duration, Status, Description\r\n");
+
+                // Loop through all of the timestamps in the DataGrid.
+                for (int i = 0; i < dgStamps.Items.Count - 1; ++i)
+                {
+                    TimeStamp tStamp = (dgStamps.Items[i] as TimeStamp);
+
+                    // Add the TimeStamp information to the file string.
+                    sString.AppendLine(tStamp.STime + "," + tStamp.ETime + "," + tStamp.Duration + "," + tStamp.Status + "," + tStamp.Description);
+                }
+
                 // Write all of the information to the file.
                 File.WriteAllText(FilePath, sString.ToString());
                 changed = false;
@@ -512,6 +518,33 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs</param>
         private void OnSaveAs_Click(object sender, RoutedEventArgs e)
         {
+            if (!String.IsNullOrEmpty(FilePath))
+                OnSave_Click(this, e);
+
+            FilePath = FileOperations.GetSaveAsFile();
+
+            if (FilePath != String.Empty)
+            {
+                // Create the string for the file, starting with the header information.
+                StringBuilder sString = new StringBuilder("Start Time, End Time, Duration, Status, Description\r\n");
+
+                // Loop through all of the timestamps in the DataGrid.
+                for (int i = 0; i < dgStamps.Items.Count - 1; ++i)
+                {
+                    TimeStamp tStamp = (dgStamps.Items[i] as TimeStamp);
+
+                    // Add the TimeStamp information to the file string.
+                    sString.AppendLine(tStamp.STime + "," + tStamp.ETime + "," + tStamp.Duration + "," + tStamp.Status + "," + tStamp.Description);
+                }
+
+                // Write all of the information to the file.
+                File.WriteAllText(FilePath, sString.ToString());
+                changed = false;
+
+                // Set the FileName and the window title.
+                this.FileName = System.IO.Path.GetFileName(FilePath);
+                this.Title = FileName + " - Day Logger";
+            }
         }
 
         /// <summary>

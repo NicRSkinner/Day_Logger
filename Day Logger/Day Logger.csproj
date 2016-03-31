@@ -83,6 +83,7 @@
     </ApplicationDefinition>
     <Compile Include="ChangeHandler.cs" />
     <Compile Include="ConfigOperations.cs" />
+    <Compile Include="File Operations\FileOperations.cs" />
     <Compile Include="Time Stamp\TimeStamp.cs" />
     <Compile Include="Time Stamp\TimestampFunctions.cs" />
     <Page Include="MainWindow.xaml">

@@ -20,7 +20,7 @@
                     <MenuItem Header="_New" Click="OnNew_Click"/>
                     <MenuItem Header="_Open" Click="OnOpen_Click"/>
                     <MenuItem Header="_Save"  Click="OnSave_Click"/>
-                    <MenuItem Header="_Save As (No Implementation)" Click="OnSaveAs_Click"/>
+                    <MenuItem Header="_Save As" Click="OnSaveAs_Click"/>
                     <MenuItem Header="_Exit" Click="OnExit_Click"/>
                 </MenuItem>
                 <MenuItem Header="_Edit">

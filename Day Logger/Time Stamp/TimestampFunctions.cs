@@ -17,65 +17,10 @@ using System.IO;
 namespace Day_Logger
 {
     /// <summary>
-    /// Functions for calculating TimeStamps and getting files.
+    /// Functions for calculating TimeStamp durations and descriptions.
     /// </summary>
     public class TimestampFunctions
     {
-        #region File Operations
-        /// <summary>
-        /// This function is used to get the path to a file to save.
-        /// </summary>
-        /// <returns type="string">The path to the file.</returns>
-        public static string GetSaveFile()
-        {
-            // Create the SaveFileDialog that we show the user.
-            SaveFileDialog dlg = new SaveFileDialog();
-            dlg.FileName = "New Document";
-            dlg.DefaultExt = ".dlog";
-            dlg.Filter = "Day Log (.dlog)|*.dlog";
-
-            // Show the user the dialog and check if they selected a file.
-            if (dlg.ShowDialog() == DialogResult.OK)
-            {
-                return dlg.FileName;
-            }
-
-            // If the user didn't select a file, return an empty string.
-            return String.Empty;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns type="string"></returns>
-        public static string GetSaveAsFile()
-        {
-
-            return String.Empty;
-        }
-
-        /// <summary>
-        /// This function is used to get the path to a file to open.
-        /// </summary>
-        /// <returns type="string">The path to the file.</returns>
-        public static string OpenFile()
-        {
-            // Create the OpenFileDialog to show the user.
-            OpenFileDialog dlg = new OpenFileDialog();
-            dlg.DefaultExt = ".dlog";
-            dlg.Filter = "Day Log (.dlog)|*.dlog";
-
-            // Show the user the dialog and check if they selected a file to open.
-            if (dlg.ShowDialog() == DialogResult.OK)
-            {
-                return dlg.FileName;
-            }
-            
-            // If the user didn't select a file, return an empty string.
-            return String.Empty;
-        }
-        #endregion
-
         /// <summary>
         /// This function calculates the average
         /// </summary>
