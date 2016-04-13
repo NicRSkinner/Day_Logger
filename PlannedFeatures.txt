@@ -6,8 +6,9 @@ PURPOSE OF THIS FILE: This file is for storing a list of features that I plan on
   - Allow user to create profiles for different configurations.
 - Add button to make a custom status/call type/customer type for the next timestamp.
   - Reset the custom box when a timestamp is added.
-- Add ability to duplicate a selected punch (Button?)
+- Add ability to duplicate a selected punch (Button? Shortcut? CTRL-C CTRL-V?).
 - Add Field to calculate the average duration of the time fields when any of them are changed.
+- Add ability to add additional notes to a call.
 
 COMPLETED:
 
