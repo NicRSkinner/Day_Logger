@@ -87,4 +87,197 @@ namespace Day_Logger.File_Operations
         }
         #endregion
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class StampFile
+    {
+        #region Initializers
+        /// <summary>
+        /// Default Initializer
+        /// </summary>
+        public StampFile()
+        {
+            FilePath = String.Empty;
+            Initialize();
+        }
+
+        /// <summary>
+        /// Initialize the StampFile with a file path.
+        /// </summary>
+        /// <param name="filePath"></param>
+        public StampFile(string filePath)
+        {
+            FilePath = filePath;
+            Initialize();
+        }
+
+        /// <summary>
+        /// Initializes the instance fields.
+        /// </summary>
+        private void Initialize()
+        {
+            Header = new List<string>();
+            Stamps = new List<TimeStamp>();
+        }
+        #endregion
+        #region Saving
+        /// <summary>
+        /// Save the current working file.
+        /// </summary>
+        public void Save()
+        {
+            if (String.IsNullOrEmpty(FilePath))
+            {
+                FilePath = GetSaveFile();
+
+                if (String.IsNullOrEmpty(FilePath))
+                    return;
+
+                SetFormat();
+            }
+
+            switch (FileFormat)
+            {
+                case FileFormatting.CSV:
+                    SaveFile(AsCSV());
+                    break;
+                case FileFormatting.DLOG:
+                default:
+                    SaveFile(AsDlog());
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        private void SaveFile(string info)
+        {
+            File.WriteAllText(FilePath, info);  //  TODO: Verify that the file path still exists.
+        }
+        #endregion
+        #region File Formatting
+        /// <summary>
+        /// Formats the file information into a DLOG format.
+        /// </summary>
+        /// <returns>The formatted file information.</returns>
+        private string AsDlog()
+        {
+            return AsCSV();  //  Change this when the DLOG format changes.
+        }
+
+        /// <summary>
+        /// Formats the file information into a CSV format.
+        /// </summary>
+        /// <returns>The formatted file information.</returns>
+        private string AsCSV()
+        {
+            StringBuilder sString = new StringBuilder();
+
+            foreach (string s in Header)
+                sString.Append(s + ',');
+
+            sString.Append("\r\n");
+
+            foreach (TimeStamp stamp in Stamps)
+                sString.AppendLine(stamp.STime + ',' + stamp.ETime + ',' + stamp.Duration + ','
+                                    + stamp.Status + ',' + stamp.Description + ',');
+
+            return sString.ToString();
+        }
+
+        /// <summary>
+        /// Sets the format for the current working file.
+        /// </summary>
+        private void SetFormat()
+        {
+            switch (Path.GetExtension(FilePath).ToLower())
+            {
+                case ".csv":
+                    FileFormat = FileFormatting.CSV;
+                    break;
+
+                case ".txt":
+                    FileFormat = FileFormatting.TXT;
+                    break;
+
+                case ".dlog":
+                default:
+                    FileFormat = FileFormatting.DLOG;
+                    break;
+            }
+        }
+        #endregion
+        #region Windows
+        private string GetSaveFile()
+        {
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.AddExtension = true;
+            dlg.Filter = "Day Log (.dlog)|*.dlog|CSV (.csv)|*.csv";
+
+            if (dlg.ShowDialog() == DialogResult.OK)
+                return dlg.FileName;
+
+            return String.Empty;
+        }
+        #endregion
+        #region Adding/Removing Information
+        /// <summary>
+        /// Adds a header from a delimited header string.
+        /// </summary>
+        /// <param name="header">The delimited string.</param>
+        /// <param name="delim">The delimiter to split the string by.</param>
+        public void AddHeader(string header, char[] delim)
+        {
+            if (String.IsNullOrEmpty(header))
+                throw new NullReferenceException("The header cannot be null or empty.");
+
+            string[] hSplit = header.Split(delim);
+
+            foreach (string s in hSplit)
+            {
+                Header.Add(s);
+            }
+        }
+
+        /// <summary>
+        /// Adds a TimeStamp to the current save information.
+        /// </summary>
+        /// <param name="stamp">The stamp to add.</param>
+        public void AddStamp(TimeStamp stamp)
+        {
+            if (stamp == null)
+                throw new NullReferenceException("The stamp cannot be null.");
+
+            Stamps.Add(stamp);
+        }
+
+        /// <summary>
+        /// Removes a stamp from the current save information.
+        /// </summary>
+        /// <param name="stamp">The stamp to remove.</param>
+        public void RemoveStamp(TimeStamp stamp)
+        {
+            if (stamp == null)
+                throw new NullReferenceException("The stamp cannot be null.");
+
+            foreach (TimeStamp s in Stamps)
+            {
+                if (s == stamp)
+                    Stamps.Remove(s);
+            }
+        }
+        #endregion
+        #region Instance Variables
+        public string FilePath { get; private set; }
+        private FileFormatting FileFormat { get; set; }
+        private List<string> Header { get; set; }
+        private List<TimeStamp> Stamps { get; set; }
+        #endregion
+    }
+
+    public enum FileFormatting { CSV, DLOG, TXT };
 }

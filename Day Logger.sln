@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Day Logger", "Day Logger\Day Logger.csproj", "{62CD72BD-3DF1-4BB5-AFCB-15798628386C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayLoggerTests", "DayLoggerTests\DayLoggerTests.csproj", "{6CA6E115-D319-41CC-A189-C25B306FD4CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{62CD72BD-3DF1-4BB5-AFCB-15798628386C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62CD72BD-3DF1-4BB5-AFCB-15798628386C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62CD72BD-3DF1-4BB5-AFCB-15798628386C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CA6E115-D319-41CC-A189-C25B306FD4CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CA6E115-D319-41CC-A189-C25B306FD4CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CA6E115-D319-41CC-A189-C25B306FD4CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CA6E115-D319-41CC-A189-C25B306FD4CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

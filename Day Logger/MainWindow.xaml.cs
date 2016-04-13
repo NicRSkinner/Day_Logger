@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Day_Logger.File_Operations;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,7 +15,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using Day_Logger.File_Operations;
 
 namespace Day_Logger
 {
