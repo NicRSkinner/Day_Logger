@@ -1,0 +1,143 @@
+﻿<Window x:Class="Day_Logger.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:data="clr-namespace:Day_Logger"
+        Title="New Document - Day Logger" Height="750" Width="750">
+    <Window.Resources>
+        <data:TimeStampCollection x:Key="StmpDs" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="22"/>
+            <RowDefinition Height="34"/>
+            <RowDefinition Height="34"/>
+            <RowDefinition Height="34"/>
+            <RowDefinition Height="550*"/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_File">
+                    <MenuItem Header="_New" Click="OnNew_Click"/>
+                    <MenuItem Header="_Open" Click="OnOpen_Click"/>
+                    <MenuItem Header="_Save"  Click="OnSave_Click"/>
+                    <MenuItem Header="_Save As" Click="OnSaveAs_Click"/>
+                    <MenuItem Header="_Exit" Click="OnExit_Click"/>
+                </MenuItem>
+                <MenuItem Header="_Edit">
+                    <MenuItem Header="_Undo" Click="OnUndo_Click"/>
+                    <MenuItem Header="_Redo" Click="OnRedo_Click"/>
+                    <MenuItem Header="_Cut" />
+                    <MenuItem Header="_Copy" />
+                    <MenuItem Header="_Paste" />
+                </MenuItem>
+                <MenuItem Header="_Options">
+                    <MenuItem Header="_Preferences" />
+                    <MenuItem Header="_Profile" />
+                    <MenuItem Header="_Configuration" />
+                </MenuItem>
+                <MenuItem Header="_Help">
+                    <MenuItem Header="_About" />
+                </MenuItem>
+            </Menu>
+        </DockPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="135"/>
+                <ColumnDefinition Width="135"/>
+                <ColumnDefinition Width="135"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="btnAddStamp" Grid.Column="0" Margin="10,9,0,0" Content="+ Add Timestamp" Click="btnAddStamp_Click" />
+            <Button x:Name="btnRemoveStamp" Grid.Column="1" Margin="0,9,0,0" Content="- Remove Timestamp" Height="25" VerticalAlignment="Top" Click="btnRemoveStamp_Click" IsHitTestVisible="True" />
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="77"/>
+                <ColumnDefinition Width="92"/>
+                <ColumnDefinition Width="72"/>
+                <ColumnDefinition Width="92"/>
+                <ColumnDefinition Width="55"/>
+                <ColumnDefinition Width="179"/>
+                <ColumnDefinition Width="240"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Margin="10,10,0,0" Content="Start Time:" />
+            <TextBox x:Name="txtStartTime" Grid.Column="1" Margin="0,10,0,2" />
+            <Label Grid.Column="2" Margin="10,10,0,0" Content="End Time:" />
+            <TextBox x:Name="txtEndTime" Grid.Column="3" Margin="0,10,0,2" />
+            <Label Grid.Column="4" Margin="10,10,0,0" Content="Status:" />
+            <ComboBox x:Name="cStatusBox" Grid.Column="5" HorizontalAlignment="Left" Margin="0,9,0,0" VerticalAlignment="Top" Width="179" Height="25" />
+        </Grid>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="170"/>
+                <ColumnDefinition Width="103"/>
+                <ColumnDefinition Width="117"/>
+                <ColumnDefinition Width="125"/>
+                <ColumnDefinition Width="110"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Margin="10,8,0,0" Content="Call Type:" />
+            <ComboBox x:Name="cCallTypeBox" Grid.Column="1" HorizontalAlignment="Left" Margin="0,9,0,0" VerticalAlignment="Top" Width="170" Height="25" />
+            <Label Grid.Column="2" Margin="10,8,0,0" Content="Customer Type:" />
+            <ComboBox x:Name="cCustomerTypeBox" Grid.Column="3" HorizontalAlignment="Left" Margin="0,9,0,0" VerticalAlignment="Top" Width="117" Height="25" />
+            <Label Grid.Column="4" Margin="10,8,0,0" Content="Reference Number:" />
+            <TextBox x:Name="txtReferenceNumber" Grid.Column="5" Margin="0,9,0,0" />
+        </Grid>
+
+        <TabControl Grid.Row="4" Margin="10,10,10,10">
+            <TabItem Header="Time Stamps">
+                <Grid DataContext="{Binding Source={StaticResource StmpDs}}" Margin="0,0,0,0">
+                    <DataGrid x:Name="dgStamps" ItemsSource="{Binding}" Margin="2,2,2,2"
+                      CanUserSortColumns="False" AutoGenerateColumns="False" ColumnWidth="*"
+                      SelectionMode="Extended" AllowDrop="True" CanUserResizeRows="False"
+                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Path=STime, Mode=TwoWay}" Header="Start Time" />
+                            <DataGridTextColumn Binding="{Binding Path=ETime, Mode=TwoWay}" Header="End Time" />
+                            <DataGridTextColumn Binding="{Binding Duration, Mode=OneWay}" Header="Duration" />
+                            <DataGridTextColumn Binding="{Binding Path=Status, Mode=TwoWay}" Header="Status" />
+                            <DataGridTextColumn Binding="{Binding Path=Description, Mode=TwoWay}" Header="Description" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Averages">
+                <Grid Margin="0,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="0,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="179"/>
+                            <ColumnDefinition Width="128*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Margin="0,0,0,0" Content="Status:"/>
+                        <ComboBox x:Name="cAverageSta" Grid.Column="1" Margin="0,0,0,0" SelectionChanged="cAverageSta_SelectionChanged"/>
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="0,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="105"/>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Margin="0,0,0,0" Content="Total Duration:"/>
+                        <Label x:Name="lTotalDur" Grid.Column="1" Margin="0,0,0,0" Content="00:00"/>
+                    </Grid>
+                    <Grid Grid.Row="2" Margin="0,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="105"/>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Margin="0,0,0,0" Content="Average Duration:"/>
+                        <Label x:Name="lAverageDur" Grid.Column="1" Margin="0,0,0,0" Content="00:00"/>
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
+    
