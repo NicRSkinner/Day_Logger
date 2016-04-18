@@ -191,6 +191,8 @@ namespace Day_Logger.File_Operations
 
             FilePath = newPath;
             SetFormat();
+
+            OpenFile();
         }
 
         /// <summary>
@@ -270,9 +272,6 @@ namespace Day_Logger.File_Operations
                     break;
             }
         }
-        #endregion
-        #region Windows
-
         #endregion
         #region Adding/Removing Information
         /// <summary>
