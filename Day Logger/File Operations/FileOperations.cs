@@ -90,7 +90,7 @@ namespace Day_Logger.File_Operations
     }
 
     /// <summary>
-    /// 
+    /// Class used for opening/saving the formatted information.
     /// </summary>
     public class StampFile
     {
