@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
+using Day_Logger.TimeStamps;
 
 namespace Day_Logger.File_Operations
 {
@@ -158,6 +159,65 @@ namespace Day_Logger.File_Operations
         {
             File.WriteAllText(FilePath, info);  //  TODO: Verify that the file path still exists.
         }
+
+        /// <summary>
+        /// Ask the user to select the file path for saving.
+        /// </summary>
+        /// <returns></returns>
+        private string GetSaveFile()
+        {
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.AddExtension = true;
+            dlg.Filter = "Day Log (.dlog)|*.dlog|CSV (.csv)|*.csv";
+
+            if (dlg.ShowDialog() == DialogResult.OK)
+                return dlg.FileName;
+
+            return String.Empty;
+        }
+        #endregion
+        #region Opening
+        /// <summary>
+        /// Open a file with the current FilePath
+        /// </summary>
+        public void Open()
+        {
+            // Ask the user to specify the new file path.
+            string newPath = GetOpenFile();
+
+            // Check to see if the user cancelled.
+            if (String.IsNullOrEmpty(newPath))
+                return;
+
+            FilePath = newPath;
+            SetFormat();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <NOTE>Format is all saved the same,
+        ///         add different formatting if this changes.</NOTE>
+        private void OpenFile()
+        {
+            // TODO: Finish method.
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private string GetOpenFile()
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.AddExtension = true;
+            dlg.Filter = "Day Log (.dlog)|*.dlog|CSV (.csv)|*.csv";
+
+            if (dlg.ShowDialog() == DialogResult.OK)
+                return dlg.FileName;
+
+            return String.Empty;
+        }
         #endregion
         #region File Formatting
         /// <summary>
@@ -212,17 +272,7 @@ namespace Day_Logger.File_Operations
         }
         #endregion
         #region Windows
-        private string GetSaveFile()
-        {
-            SaveFileDialog dlg = new SaveFileDialog();
-            dlg.AddExtension = true;
-            dlg.Filter = "Day Log (.dlog)|*.dlog|CSV (.csv)|*.csv";
 
-            if (dlg.ShowDialog() == DialogResult.OK)
-                return dlg.FileName;
-
-            return String.Empty;
-        }
         #endregion
         #region Adding/Removing Information
         /// <summary>

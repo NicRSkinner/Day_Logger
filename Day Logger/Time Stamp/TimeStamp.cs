@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace Day_Logger
+namespace Day_Logger.TimeStamps
 {
     public class TimeStamp : INotifyPropertyChanged
     {
