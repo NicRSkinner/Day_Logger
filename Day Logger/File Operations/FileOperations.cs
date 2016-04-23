@@ -192,23 +192,57 @@ namespace Day_Logger.File_Operations
             FilePath = newPath;
             SetFormat();
 
+            // Empty the save information.
+            Header.Clear();
+            Stamps.Clear();
+
             OpenFile();
         }
 
         /// <summary>
-        /// 
+        /// Opens the information from the given file path and
+        ///     stores it in the stamps collection.
         /// </summary>
         /// <NOTE>Format is all saved the same,
         ///         add different formatting if this changes.</NOTE>
         private void OpenFile()
         {
-            // TODO: Finish method.
+            try
+            {
+                using (StreamReader sRead = new StreamReader(FilePath))
+                {
+                    string[] header = sRead.ReadLine().Split(',');
+
+                    foreach (string s in header)
+                    {
+                        if (!String.IsNullOrEmpty(s))
+                            Header.Add(s);
+                    }
+
+                    while (!sRead.EndOfStream)
+                    {
+                        string[] stampInfo = sRead.ReadLine().Split(',');
+
+                        // Create a new Timestamp to add to the save file.
+                        // NOTE: I skipped stampInfo[2] since that is the duration.
+                        TimeStamp newStamp = new TimeStamp(stampInfo[0], stampInfo[1],
+                                                            stampInfo[3], stampInfo[4]);
+
+                        Stamps.Add(newStamp);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         /// <summary>
-        /// 
+        /// Gets the file path from the user using OpenFileDialog.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The file path the user selects.
+        ///             NOTE: Returns an empty string if the user cancels.</returns>
         private string GetOpenFile()
         {
             OpenFileDialog dlg = new OpenFileDialog();
