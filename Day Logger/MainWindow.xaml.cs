@@ -404,6 +404,30 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs</param>
         private void OnOpen_Click(object sender, RoutedEventArgs e)
         {
+            if (changed == true)
+            {
+                MessageBoxResult result = System.Windows.MessageBox.Show("Would you like to save the current changes?", "Confirm Changes",
+                                MessageBoxButton.YesNoCancel);
+
+                if (result == MessageBoxResult.Yes)
+                    StmpSave.Save();
+                else if (result == MessageBoxResult.Cancel)
+                    return;
+            }
+
+            (Resources["StmpDs"] as TimeStampCollection).Clear();
+            StmpSave.Clear();
+
+            StmpSave.Open();
+
+            foreach (TimeStamp stamp in StmpSave.Stamps)
+            {
+                (Resources["StmpDs"] as TimeStampCollection).AddStamp(stamp);
+            }
+
+            this.FileName = System.IO.Path.GetFileName(StmpSave.FilePath);
+            this.Title = FileName + " - Day Logger";
+            changed = false;
         }
 
         /// <summary>
@@ -522,7 +546,6 @@ namespace Day_Logger
         public delegate Point GetDragDropPosition(IInputElement element);
         #endregion
         #region Instance Fields
-        private string FilePath;
         private string FileName;
         private bool changed = false;
         private int prevRowIndex;
