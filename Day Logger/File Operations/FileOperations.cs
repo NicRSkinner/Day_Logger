@@ -233,9 +233,9 @@ namespace Day_Logger.File_Operations
                     }
                 }
             }
-            catch (Exception e)
+            catch
             {
-                throw e;
+                throw;
             }
         }
 
