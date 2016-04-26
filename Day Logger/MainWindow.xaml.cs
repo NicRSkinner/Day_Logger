@@ -35,59 +35,13 @@ namespace Day_Logger
         }
 
         /// <summary>
-        /// Initializer for opening a new file with a given filepath.
-        /// </summary>
-        /// <param name="filePath">The file path to get the information from.</param>
-        public MainWindow(string filePath)
-        {
-            // Initialized the window.
-            InitializeWindow();
-            InitializeConfig();
-
-            // Set the window's file path.
-            FilePath = filePath;
-
-            // Get the stream to initialize the window with.
-            StreamReader sRead = new StreamReader(filePath);
-
-            // Set the filename to be the name of the file from the given path.
-            this.FileName = System.IO.Path.GetFileName(filePath);
-
-            // Position the reader to the second line, as the first is only for the user.
-            sRead.ReadLine();
-
-            // Set the timestamps in the DataGrid with the information from the file.
-            while (!sRead.EndOfStream)
-            {
-                string input = sRead.ReadLine();
-
-                string[] res = input.Split(',');
-
-                (Resources["StmpDs"] as TimeStampCollection).AddStamp(new TimeStamp()
-                {
-                    STime = res[0],
-                    ETime = res[1],
-                    Status = res[3],
-                    Description = res[4]
-                });
-            }
-
-            // Set txtStartTime to be the end time of the last timestamp.
-            int itemNo = (Resources["StmpDs"] as TimeStampCollection).Count - 1;
-
-            if (itemNo >= 0)
-                txtStartTime.Text = (dgStamps.Items[itemNo] as TimeStamp).ETime;
-
-            this.Title = FileName + " - Day Logger";
-        }
-
-        /// <summary>
         /// This method is used to initialize the window.
         /// </summary>
         private void InitializeWindow()
         {
             InitializeComponent();
             changeHandler = new DataGridChangeHandler();
+            StmpSave = new StampFile();
 
             txtEndTime.Text = DateTime.Now.ToString("HH:mm");
 
@@ -105,6 +59,7 @@ namespace Day_Logger
             this.dgStamps.PreviewKeyDown += HandleKeyEvent;
 
             changeHandler.Changed += new DataGridChangeHandler.ChangedEventHandler(HandleChangedEvent);
+            StmpSave.AddHeader("Start Time,End Time,Duration,Status,Description", new char[] { ',' });
         }
         #endregion
         #region Window Functions
@@ -357,6 +312,7 @@ namespace Day_Logger
                                                                    txtReferenceNumber.Text);
 
             (Resources["StmpDs"] as TimeStampCollection).AddStamp(addition);
+            StmpSave.AddStamp(addition);
 
             cStatusBox.Text = "";
             cCallTypeBox.Text = "";
@@ -393,7 +349,10 @@ namespace Day_Logger
             }
 
             foreach (TimeStamp tStamp in stmpList.Values)
+            {
                 stamps.Remove(tStamp);
+                StmpSave.RemoveStamp(tStamp);
+            }
 
             changeHandler.AddChange(() =>
             {
@@ -424,26 +383,13 @@ namespace Day_Logger
                                 MessageBoxButton.YesNoCancel);
 
                 if (result == MessageBoxResult.Yes)
-                    OnSave_Click(this, new RoutedEventArgs());
+                    StmpSave.Save();
                 else if (result == MessageBoxResult.Cancel)
                     return;
             }
 
-            FilePath = String.Empty;
-
-            List<TimeStamp> rList = new List<TimeStamp>();
-
-            try
-            {
-                foreach (TimeStamp tStamp in dgStamps.Items)
-                {
-                    rList.Add(tStamp);
-                }
-            }
-            catch { }
-
-            for (int i = 0; i < rList.Count; ++i)
-                dgStamps.Items.Remove(rList[i]);
+            (Resources["StmpDs"] as TimeStampCollection).Clear();
+            StmpSave.Stamps.Clear();
 
             txtStartTime.Text = String.Empty;
             changed = false;
@@ -458,19 +404,6 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs</param>
         private void OnOpen_Click(object sender, RoutedEventArgs e)
         {
-            // Get the file path for the file to open.
-            string filePath = FileOperations.OpenFile();
-
-            // Make sure that a file was selected.
-            if (filePath != String.Empty)
-            {
-                // Create the new window with the StreamReader as the input.
-                MainWindow mWin = new MainWindow(filePath);
-
-                // Show the new window.
-                mWin.Show();
-                this.Close();
-            }
         }
 
         /// <summary>
@@ -480,34 +413,12 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs</param>
         private void OnSave_Click(object sender, RoutedEventArgs e)
         {
-            // Check to see if FilePath has been determined previously.
-            if (String.IsNullOrEmpty(FilePath))
+            if (StmpSave.Save())
             {
-                // Create FilePath if it was not aready determined.
-                FilePath = FileOperations.GetSaveFile();
-            }
-
-            // Check FilePath to see if the user hit "cancel"
-            if (FilePath != String.Empty)
-            {
-                // Create the string for the file, starting with the header information.
-                StringBuilder sString = new StringBuilder("Start Time, End Time, Duration, Status, Description\r\n");
-
-                // Loop through all of the timestamps in the DataGrid.
-                for (int i = 0; i < dgStamps.Items.Count - 1; ++i)
-                {
-                    TimeStamp tStamp = (dgStamps.Items[i] as TimeStamp);
-
-                    // Add the TimeStamp information to the file string.
-                    sString.AppendLine(tStamp.STime + "," + tStamp.ETime + "," + tStamp.Duration + "," + tStamp.Status + "," + tStamp.Description);
-                }
-
-                // Write all of the information to the file.
-                File.WriteAllText(FilePath, sString.ToString());
                 changed = false;
 
                 // Set the FileName and the window title.
-                this.FileName = System.IO.Path.GetFileName(FilePath);
+                this.FileName = System.IO.Path.GetFileName(StmpSave.FilePath);
                 this.Title = FileName + " - Day Logger";
             }
         }
@@ -519,33 +430,6 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs</param>
         private void OnSaveAs_Click(object sender, RoutedEventArgs e)
         {
-            if (!String.IsNullOrEmpty(FilePath))
-                OnSave_Click(this, e);
-
-            FilePath = FileOperations.GetSaveAsFile();
-
-            if (FilePath != String.Empty)
-            {
-                // Create the string for the file, starting with the header information.
-                StringBuilder sString = new StringBuilder("Start Time, End Time, Duration, Status, Description\r\n");
-
-                // Loop through all of the timestamps in the DataGrid.
-                for (int i = 0; i < dgStamps.Items.Count - 1; ++i)
-                {
-                    TimeStamp tStamp = (dgStamps.Items[i] as TimeStamp);
-
-                    // Add the TimeStamp information to the file string.
-                    sString.AppendLine(tStamp.STime + "," + tStamp.ETime + "," + tStamp.Duration + "," + tStamp.Status + "," + tStamp.Description);
-                }
-
-                // Write all of the information to the file.
-                File.WriteAllText(FilePath, sString.ToString());
-                changed = false;
-
-                // Set the FileName and the window title.
-                this.FileName = System.IO.Path.GetFileName(FilePath);
-                this.Title = FileName + " - Day Logger";
-            }
         }
 
         /// <summary>
@@ -642,6 +526,7 @@ namespace Day_Logger
         private string FileName;
         private bool changed = false;
         private int prevRowIndex;
+        private StampFile StmpSave;
         private DataGridChangeHandler changeHandler;
         #endregion
     }

@@ -127,14 +127,14 @@ namespace Day_Logger.File_Operations
         /// <summary>
         /// Save the current working file.
         /// </summary>
-        public void Save()
+        public bool Save()
         {
             if (String.IsNullOrEmpty(FilePath))
             {
                 FilePath = GetSaveFile();
 
                 if (String.IsNullOrEmpty(FilePath))
-                    return;
+                    return false;
 
                 SetFormat();
             }
@@ -149,6 +149,7 @@ namespace Day_Logger.File_Operations
                     SaveFile(AsDlog());
                     break;
             }
+            return true;
         }
 
         /// <summary>
@@ -347,18 +348,23 @@ namespace Day_Logger.File_Operations
             if (stamp == null)
                 throw new NullReferenceException("The stamp cannot be null.");
 
-            foreach (TimeStamp s in Stamps)
-            {
-                if (s == stamp)
-                    Stamps.Remove(s);
-            }
+            Stamps.Remove(stamp);
+        }
+
+        /// <summary>
+        /// Clears the information for the stamp file.
+        /// </summary>
+        public void Clear()
+        {
+            Header.Clear();
+            Stamps.Clear();
         }
         #endregion
         #region Instance Variables
         public string FilePath { get; private set; }
-        private FileFormatting FileFormat { get; set; }
-        private List<string> Header { get; set; }
-        private List<TimeStamp> Stamps { get; set; }
+        public FileFormatting FileFormat { get; private set; }
+        public List<string> Header { get; private set; }
+        public List<TimeStamp> Stamps { get; private set; }
         #endregion
     }
 
