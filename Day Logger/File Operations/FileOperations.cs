@@ -95,7 +95,7 @@ namespace Day_Logger.File_Operations
     public class StampFile
     {
         #region Initializers
-        /// <summary>
+        /// <summary>>
         /// Default Initializer
         /// </summary>
         public StampFile()
