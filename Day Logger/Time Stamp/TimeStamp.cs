@@ -52,7 +52,7 @@ namespace Day_Logger.TimeStamps
         {
             get
             {
-                return TimestampFunctions.CalculateDuration(STime, ETime);
+                return CalculateDuration(STime, ETime);
             }
         }
         public string Status 
@@ -73,6 +73,59 @@ namespace Day_Logger.TimeStamps
                 description = value;
                 OnPropertyChanged("Description");
             }
+        }
+        #endregion
+        #region Methods
+        /// <summary>
+        /// This function is used to caluculate the difference between two timestamps
+        /// </summary>
+        /// <param name="start">The starting time FORMAT: HH:MM</param>
+        /// <param name="end">The ending time FORMAT: HH:MM</param>
+        /// <returns type="string">The duration between the start and ending times FORMAT: HH:MM
+        ///          NOTE: WILL RETURN ##:## IF FORMAT IS INVALID.</returns>
+        public static string CalculateDuration(string start, string end)
+        {
+            // Make sure that the input is valid!
+            if (String.IsNullOrEmpty(start) || String.IsNullOrEmpty(end))
+                return "##:##";
+
+            // Temporary variables for storing the result time.
+            int hr = 0;
+            int min = 0;
+
+            // Split the times so that we can subtract the times.
+            string[] startSpl = start.Split(':');
+            string[] endSpl = end.Split(':');
+
+            // Temporary variables for attempting to parse the time.
+            int hr1, hr2, min1, min2;
+            bool bh1, bh2, bm1, bm2;
+
+            // Attempt to parse the hours.
+            bh1 = Int32.TryParse(startSpl[0], out hr1);
+            bh2 = Int32.TryParse(endSpl[0], out hr2);
+
+            // Attempt to parse the minutes.
+            bm1 = Int32.TryParse(startSpl[1], out min1);
+            bm2 = Int32.TryParse(endSpl[1], out min2);
+
+            // Check if values were parsed correctly.
+            if (!bh1 || !bh2 || !bm1 || !bm2)
+                return "##:##";
+
+            // Subtract the times.
+            hr = hr2 - hr1;
+            min = min2 - min1;
+
+            // If the minutes go below zero, we need to subtract an hour.
+            if (min < 0)
+            {
+                hr -= 1;
+                min += 60;
+            }
+
+            // Put the result together and return it.
+            return (hr + ":" + (min == 0 ? "00" : (min < 10) ? "0" + Convert.ToString(min) : Convert.ToString(min)));
         }
         #endregion
         #region Variables

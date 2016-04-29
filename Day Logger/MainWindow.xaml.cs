@@ -292,7 +292,7 @@ namespace Day_Logger
                                     () => { stamp.RemoveAt(prevIndex); stamp.Insert(index, movedStmp); });
         }
         #endregion
-        #region Buttons
+        #region Input
         /// <summary>
         /// Handles the event for adding timestamps to the ListView.
         /// </summary>
@@ -368,8 +368,7 @@ namespace Day_Logger
                 }
             });
         }
-        #endregion
-        #region Menu
+
         /// <summary>
         /// Handle the OnNew event for creating a new document.
         /// </summary>
@@ -486,8 +485,7 @@ namespace Day_Logger
         {
 
         }
-        #endregion
-        #region Key Input
+
         /// <summary>
         /// Handles the keyboard macros for interacting with the main window.
         /// </summary>
@@ -527,7 +525,7 @@ namespace Day_Logger
             }
         }
         #endregion
-        #region Timer
+        #region Ticks
         /// <summary>
         /// The event handler for the tick event, which goes over once a minute.
         /// </summary>
@@ -542,15 +540,13 @@ namespace Day_Logger
             CommandManager.InvalidateRequerySuggested();
         }
         #endregion
-        #region Delegates
-        public delegate Point GetDragDropPosition(IInputElement element);
-        #endregion
         #region Instance Fields
         private string FileName;
         private bool changed = false;
         private int prevRowIndex;
         private StampFile StmpSave;
         private DataGridChangeHandler changeHandler;
+        public delegate Point GetDragDropPosition(IInputElement element);
         #endregion
     }
 }
