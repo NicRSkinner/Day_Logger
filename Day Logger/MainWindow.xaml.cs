@@ -497,10 +497,24 @@ namespace Day_Logger
 
             switch(e.Key)
             {
+                case Key.Q:
+                    if (isCtrlDown)
+                    {
+                        btnAddStamp_Click(this, new RoutedEventArgs());
+                        e.Handled = true;
+                    }
+                    break;
                 case Key.S:
                     if (isCtrlDown)
                     {
                         OnSave_Click(this, new RoutedEventArgs());
+                        e.Handled = true;
+                    }
+                    break;
+                case Key.W:
+                    if (isCtrlDown)
+                    {
+                        btnRemoveStamp_Click(this, new RoutedEventArgs());
                         e.Handled = true;
                     }
                     break;
