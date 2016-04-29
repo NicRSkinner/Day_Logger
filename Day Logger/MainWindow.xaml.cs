@@ -493,49 +493,41 @@ namespace Day_Logger
         /// <param name="e">The KeyEventArgs for key input</param>
         private void HandleKeyEvent(object sender, KeyEventArgs e)
         {
-            bool isCtrlDown = (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl));
-
-            switch(e.Key)
+            if ((Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl)))
             {
-                case Key.Q:
-                    if (isCtrlDown)
-                    {
+                switch (e.Key)
+                {
+                    case Key.Q:
                         btnAddStamp_Click(this, new RoutedEventArgs());
                         e.Handled = true;
-                    }
-                    break;
-                case Key.S:
-                    if (isCtrlDown)
-                    {
+                        break;
+                    case Key.S:
                         OnSave_Click(this, new RoutedEventArgs());
                         e.Handled = true;
-                    }
-                    break;
-                case Key.W:
-                    if (isCtrlDown)
-                    {
+                        break;
+                    case Key.W:
                         btnRemoveStamp_Click(this, new RoutedEventArgs());
                         e.Handled = true;
-                    }
-                    break;
-                case Key.Y:
-                    if (isCtrlDown)
-                    {
+                        break;
+                    case Key.Y:
                         changeHandler.Redo();
                         e.Handled = true;
-                    }
-                    break;
-                case Key.Z:
-                    if (isCtrlDown)
-                    {
+                        break;
+                    case Key.Z:
                         changeHandler.Undo();
                         e.Handled = true;
-                    }
-                    break;
-                case Key.Delete:
-                    btnRemoveStamp_Click(this, new RoutedEventArgs());
-                    e.Handled = true;
-                    break;
+                        break;
+                }
+            }
+            else
+            {
+                switch (e.Key)
+                {
+                    case Key.Delete:
+                        btnRemoveStamp_Click(this, new RoutedEventArgs());
+                        e.Handled = true;
+                        break;
+                }
             }
         }
         #endregion
