@@ -42,6 +42,7 @@ namespace Day_Logger
             InitializeComponent();
             changeHandler = new DataGridChangeHandler();
             StmpSave = new StampFile();
+            stampColl = (Resources["StmpDs"] as TimeStampCollection);
 
             txtEndTime.Text = DateTime.Now.ToString("HH:mm");
 
@@ -107,13 +108,11 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs.</param>
         private void cAverageSta_SelectionChanged(object sender, RoutedEventArgs e)
         {
-            TimeStampCollection tStamps = (Resources["StmpDs"] as TimeStampCollection);
-
             List<string> matchedStamps = new List<string>();
 
             string currSelected = cAverageSta.SelectedValue.ToString();
 
-            for(int i = 0; i < tStamps.Count; ++i)
+            for(int i = 0; i < stampColl.Count; ++i)
             {
                 TimeStamp currStamp = dgStamps.Items[i] as TimeStamp;
 
@@ -187,8 +186,6 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs</param>
         private void btnAddStamp_Click(object sender, RoutedEventArgs e)
         {
-            TimeStampCollection stamps = (Resources["StmpDs"] as TimeStampCollection);
-
             TimeStamp addition = new TimeStamp();
 
             addition.STime = txtStartTime.Text;
@@ -198,7 +195,7 @@ namespace Day_Logger
                                                                    cCustomerTypeBox.SelectionBoxItem.ToString(),
                                                                    txtReferenceNumber.Text);
 
-            (Resources["StmpDs"] as TimeStampCollection).AddStamp(addition);
+            stampColl.AddStamp(addition);
             StmpSave.AddStamp(addition);
 
             cStatusBox.Text = "";
@@ -208,8 +205,8 @@ namespace Day_Logger
 
             txtStartTime.Text = txtEndTime.Text;
 
-            changeHandler.AddChange(() => { stamps.RemoveAt(stamps.Count - 1); },
-                                    () => { stamps.Insert(stamps.Count, addition); });
+            changeHandler.AddChange(() => { stampColl.RemoveAt(stampColl.Count - 1); },
+                                    () => { stampColl.Insert(stampColl.Count, addition); });
         }
 
         /// <summary>
@@ -219,7 +216,6 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs</param>
         private void btnRemoveStamp_Click(object sender, RoutedEventArgs e)
         {
-            TimeStampCollection stamps = (Resources["StmpDs"] as TimeStampCollection);
             Dictionary<int, TimeStamp> stmpList = new Dictionary<int, TimeStamp>();
 
             try
@@ -236,7 +232,7 @@ namespace Day_Logger
 
             foreach (TimeStamp tStamp in stmpList.Values)
             {
-                stamps.Remove(tStamp);
+                stampColl.Remove(tStamp);
                 StmpSave.RemoveStamp(tStamp);
             }
 
@@ -244,13 +240,13 @@ namespace Day_Logger
             {
                 foreach (var stmp in stmpList.OrderBy(i => i.Key))
                 {
-                    stamps.Insert(stmp.Key, stmp.Value);
+                    stampColl.Insert(stmp.Key, stmp.Value);
                 }
             }, () =>
             {
                 foreach (var stmp in stmpList.OrderByDescending(i => i.Key))
                 {
-                    stamps.RemoveAt(stmp.Key);
+                    stampColl.RemoveAt(stmp.Key);
                 }
             });
         }
@@ -273,13 +269,12 @@ namespace Day_Logger
                     return;
             }
 
-            (Resources["StmpDs"] as TimeStampCollection).Clear();
+            stampColl.Clear();
             StmpSave.Stamps.Clear();
 
             txtStartTime.Text = String.Empty;
             changed = false;
             this.Title = "New Document - Day Logger";
-            this.FileName = "New Document";
         }
 
         /// <summary>
@@ -300,18 +295,18 @@ namespace Day_Logger
                     return;
             }
 
-            (Resources["StmpDs"] as TimeStampCollection).Clear();
+            stampColl.Clear();
             StmpSave.Clear();
 
             StmpSave.Open();
 
             foreach (TimeStamp stamp in StmpSave.Stamps)
             {
-                (Resources["StmpDs"] as TimeStampCollection).AddStamp(stamp);
+                stampColl.AddStamp(stamp);
             }
 
-            this.FileName = System.IO.Path.GetFileName(StmpSave.FilePath);
-            this.Title = FileName + " - Day Logger";
+            // Set the window title.
+            this.Title = System.IO.Path.GetFileName(StmpSave.FilePath) + " - Day Logger";
             changed = false;
         }
 
@@ -326,9 +321,8 @@ namespace Day_Logger
             {
                 changed = false;
 
-                // Set the FileName and the window title.
-                this.FileName = System.IO.Path.GetFileName(StmpSave.FilePath);
-                this.Title = FileName + " - Day Logger";
+                // Set the window title.
+                this.Title = System.IO.Path.GetFileName(StmpSave.FilePath) + " - Day Logger";
             }
         }
 
@@ -433,10 +427,10 @@ namespace Day_Logger
         }
         #endregion
         #region Instance Fields
-        private string FileName;
         private bool changed = false;
         private StampFile StmpSave;
         private DataGridChangeHandler changeHandler;
+        private TimeStampCollection stampColl;
         #endregion
     }
 }
