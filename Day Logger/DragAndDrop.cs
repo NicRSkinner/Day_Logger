@@ -1,4 +1,5 @@
 ﻿using Day_Logger.File_Operations;
+using Day_Logger.TimeStamps;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +16,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using Day_Logger.TimeStamps;
 
 namespace Day_Logger
 {
