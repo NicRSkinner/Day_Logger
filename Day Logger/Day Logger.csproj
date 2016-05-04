@@ -82,7 +82,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ChangeHandler.cs" />
-    <Compile Include="ConfigOperations.cs" />
+    <Compile Include="Config\ConfigOperations.cs" />
     <Compile Include="DragAndDrop.cs" />
     <Compile Include="File Operations\FileOperations.cs" />
     <Compile Include="Time Stamp\TimeStamp.cs" />
