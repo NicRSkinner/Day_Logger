@@ -96,8 +96,6 @@ namespace Day_Logger
             // Make sure the asterisk was not already added for the change.
             if (!this.Title.EndsWith("*"))
                 this.Title += "*";
-
-            this.changed = true;
         }
         #endregion
         #region Averages
@@ -258,7 +256,7 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs</param>
         private void OnNew_Click(object sender, RoutedEventArgs e)
         {
-            if (changed == true)
+            if (changeHandler.HasChanged == true)
             {
                 MessageBoxResult result = System.Windows.MessageBox.Show("Would you like to save the current changes?", "Confirm Changes",
                                 MessageBoxButton.YesNoCancel);
@@ -273,8 +271,8 @@ namespace Day_Logger
             StmpSave.Stamps.Clear();
 
             txtStartTime.Text = String.Empty;
-            changed = false;
             this.Title = "New Document - Day Logger";
+            changeHandler.HasChanged = false;
         }
 
         /// <summary>
@@ -284,7 +282,7 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs</param>
         private void OnOpen_Click(object sender, RoutedEventArgs e)
         {
-            if (changed == true)
+            if (changeHandler.HasChanged == true)
             {
                 MessageBoxResult result = System.Windows.MessageBox.Show("Would you like to save the current changes?", "Confirm Changes",
                                 MessageBoxButton.YesNoCancel);
@@ -307,7 +305,7 @@ namespace Day_Logger
 
             // Set the window title.
             this.Title = System.IO.Path.GetFileName(StmpSave.FilePath) + " - Day Logger";
-            changed = false;
+            changeHandler.HasChanged = false;
         }
 
         /// <summary>
@@ -319,7 +317,7 @@ namespace Day_Logger
         {
             if (StmpSave.Save())
             {
-                changed = false;
+                changeHandler.HasChanged = false;
 
                 // Set the window title.
                 this.Title = System.IO.Path.GetFileName(StmpSave.FilePath) + " - Day Logger";
@@ -342,7 +340,7 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs.</param>
         private void OnExit_Click(object sender, RoutedEventArgs e)
         {
-            if(changed == true)
+            if(changeHandler.HasChanged == true)
             {
                 MessageBoxResult result = MessageBox.Show("Would you like to save your file before closing?", "Confirm Changes",
                                 MessageBoxButton.YesNoCancel);
@@ -427,7 +425,6 @@ namespace Day_Logger
         }
         #endregion
         #region Instance Fields
-        private bool changed = false;
         private StampFile StmpSave;
         private DataGridChangeHandler changeHandler;
         private TimeStampCollection stampColl;
