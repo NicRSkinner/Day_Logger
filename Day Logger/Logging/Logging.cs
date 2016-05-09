@@ -20,12 +20,22 @@ namespace Day_Logger.Logging
     /// </summary>
     public class StampLogger : ILogger
     {
+        /// <summary>
+        /// Initializer for StampLogger.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="minPri">The minimum priority to log. Ignores anything lower.</param>
         public StampLogger(string path, LogPriority minPri = LogPriority.NORMAL)
         {
             FilePath = path;
             MinPriority = minPri;
         }
 
+        /// <summary>
+        /// Writes to the specified log file.
+        /// </summary>
+        /// <param name="info">The info to write to the log.</param>
+        /// <param name="priority">The priority of the information.</param>
         public void Write(string info, LogPriority priority)
         {
             if (String.IsNullOrWhiteSpace(info))
@@ -33,6 +43,12 @@ namespace Day_Logger.Logging
 
             if (priority < MinPriority)
                 return;
+
+            StreamWriter sWrite = new StreamWriter(FilePath, true);
+
+            sWrite.WriteLine(DateTime.UtcNow.ToString() + ',' + info + ',' + priority);
+
+            sWrite.Close();
         }
 
         private string FilePath;
