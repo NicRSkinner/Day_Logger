@@ -55,12 +55,30 @@ namespace Day_Logger.Logging
         private LogPriority MinPriority;
     }
 
+    /// <summary>
+    /// The LogService for the program to log information to.
+    /// </summary>
     public class LogService
     {
-        public LogService(ILogger log)
-        {
+        /// <summary>
+        /// Default Initializer. Marked private as it should never be used.
+        /// </summary>
+        private LogService() { }
 
+        /// <summary>
+        /// Initalizes a log given a
+        /// </summary>
+        /// <param name="log"></param>
+        public static void InitializeLog(ILogger log)
+        {
+            if (Logger != null)
+                throw new Exception("A logger has already been instantiated");
+
+            Logger = log;
         }
+
+        // The static ILogger for the singleton.
+        private static ILogger Logger;
     }
 
     public enum LogPriority { NORMAL, WARNING, FATAL }
