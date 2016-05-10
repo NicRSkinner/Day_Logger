@@ -371,16 +371,16 @@ namespace Day_Logger
             {
                 switch (e.Key)
                 {
+                    case Key.E:
+                        btnRemoveStamp_Click(this, new RoutedEventArgs());
+                        e.Handled = true;
+                        break;
                     case Key.Q:
                         btnAddStamp_Click(this, new RoutedEventArgs());
                         e.Handled = true;
                         break;
                     case Key.S:
                         OnSave_Click(this, new RoutedEventArgs());
-                        e.Handled = true;
-                        break;
-                    case Key.W:
-                        btnRemoveStamp_Click(this, new RoutedEventArgs());
                         e.Handled = true;
                         break;
                     case Key.Y:
