@@ -24,7 +24,7 @@
                 </MenuItem>
                 <MenuItem Header="_Edit">
                     <MenuItem Header="_Add Stamp (CTRL+Q)" Click="btnAddStamp_Click"/>
-                    <MenuItem Header="_Remove Stamp (CTRL+W)" Click="btnRemoveStamp_Click"/>
+                    <MenuItem Header="_Remove Stamp (CTRL+E)" Click="btnRemoveStamp_Click"/>
                     <MenuItem Header="_Undo" Click="OnUndo_Click"/>
                     <MenuItem Header="_Redo" Click="OnRedo_Click"/>
                     <MenuItem Header="_Cut" />
