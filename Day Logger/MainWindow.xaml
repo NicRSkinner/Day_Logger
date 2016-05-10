@@ -25,19 +25,19 @@
                 <MenuItem Header="_Edit">
                     <MenuItem Header="_Add Stamp (CTRL+Q)" Click="btnAddStamp_Click"/>
                     <MenuItem Header="_Remove Stamp (CTRL+E)" Click="btnRemoveStamp_Click"/>
-                    <MenuItem Header="_Undo" Click="OnUndo_Click"/>
-                    <MenuItem Header="_Redo" Click="OnRedo_Click"/>
-                    <MenuItem Header="_Cut" />
-                    <MenuItem Header="_Copy" />
-                    <MenuItem Header="_Paste" />
+                    <MenuItem Header="_Undo (Not Available)" Click="OnUndo_Click"/>
+                    <MenuItem Header="_Redo (Not Available)" Click="OnRedo_Click"/>
+                    <MenuItem Header="_Cut (Not Available)"/>
+                    <MenuItem Header="_Copy (Not Available)" />
+                    <MenuItem Header="_Paste (Not Available)" />
                 </MenuItem>
                 <MenuItem Header="_Options">
-                    <MenuItem Header="_Preferences" />
-                    <MenuItem Header="_Profile" />
-                    <MenuItem Header="_Configuration" />
+                    <MenuItem Header="_Preferences (Not Available)" />
+                    <MenuItem Header="_Profile (Not Available)" />
+                    <MenuItem Header="_Configuration (Not Available)" />
                 </MenuItem>
-                <MenuItem Header="_Help">
-                    <MenuItem Header="_About" />
+                <MenuItem Header="_Help (Not Available)">
+                    <MenuItem Header="_About (Not Available)" />
                 </MenuItem>
             </Menu>
         </DockPanel>
