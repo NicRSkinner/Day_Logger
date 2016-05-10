@@ -212,11 +212,14 @@ namespace Day_Logger
         {
             Dictionary<int, TimeStamp> stmpList = new Dictionary<int, TimeStamp>();
 
+            // Make sure something is selected before continuing.
             if (dgStamps.SelectedItems == null)
                 return;
 
             try
             {
+                // Find all stamps that are selected and store them so that we can
+                // remove them later.
                 foreach (TimeStamp tStamp in dgStamps.SelectedItems)
                 {
                     stmpList.Add(dgStamps.Items.IndexOf(tStamp), tStamp);
@@ -227,12 +230,14 @@ namespace Day_Logger
                 MessageBox.Show("Cannot delete that item", "Error");
             }
 
+            // Loop through the selected stamps and remove them.
             foreach (TimeStamp tStamp in stmpList.Values)
             {
                 stampColl.Remove(tStamp);
                 StmpSave.RemoveStamp(tStamp);
             }
 
+            // Add the change so that it can be undone/redone later.
             changeHandler.AddChange(() =>
             {
                 foreach (var stmp in stmpList.OrderBy(i => i.Key))
