@@ -212,6 +212,9 @@ namespace Day_Logger
         {
             Dictionary<int, TimeStamp> stmpList = new Dictionary<int, TimeStamp>();
 
+            if (dgStamps.SelectedItems == null)
+                return;
+
             try
             {
                 foreach (TimeStamp tStamp in dgStamps.SelectedItems)
