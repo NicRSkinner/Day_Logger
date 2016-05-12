@@ -10,7 +10,7 @@ namespace Day_Logger
 {
     public static class ConfigOperations
     {
-        private static List<string> GetConfig(string elementName)
+        public static List<string> GetConfig(string elementName)
         {
             bool withinElement = false;
             List<string> retList = new List<string>();

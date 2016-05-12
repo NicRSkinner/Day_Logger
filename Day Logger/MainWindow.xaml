@@ -10,7 +10,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="22"/>
             <RowDefinition Height="25"/>
-            <RowDefinition Height="35"/>
+            <RowDefinition Height="21"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0">
@@ -66,12 +66,12 @@
                 <ColumnDefinition Width="117"/>
                 <ColumnDefinition Width="110"/>
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="txtStartTime" Margin="5,0,0,12" />
-            <TextBox x:Name="txtEndTime" Grid.Column="1" Margin="0,0,0,12" />
-            <ComboBox x:Name="cStatusBox" Grid.Column="2" HorizontalAlignment="Left" Margin="1,0,0,0" VerticalAlignment="Top" Width="179" Height="22" />
-            <ComboBox x:Name="cCallTypeBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="170" Height="22" Grid.Column="3" />
-            <ComboBox x:Name="cCustomerTypeBox" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Top" Width="117" Height="22" Grid.ColumnSpan="2" Margin="170,0,0,0" />
-            <TextBox x:Name="txtReferenceNumber" Grid.Column="5" Margin="0,0,-16,12" />
+            <TextBox x:Name="txtStartTime" Margin="5,0,0,-1" Height="22"/>
+            <TextBox x:Name="txtEndTime" Grid.Column="1" Margin="0,0,0,-1" />
+            <ComboBox x:Name="cStatusBox" Grid.Column="2" HorizontalAlignment="Left" Margin="0,0,0,-1" VerticalAlignment="Top" Width="180" Height="22" />
+            <ComboBox x:Name="cCallTypeBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="170" Height="22" Grid.Column="3" Margin="0,0,0,-1" />
+            <ComboBox x:Name="cCustomerTypeBox" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Top" Width="119" Height="22" Grid.ColumnSpan="2" Margin="170,0,0,-1" />
+            <TextBox x:Name="txtReferenceNumber" Grid.Column="5" Margin="0,0,-16,-1" />
         </Grid>
         <TabControl Grid.Row="3" Margin="10,10,10,10">
             <TabItem Header="Time Stamps">
