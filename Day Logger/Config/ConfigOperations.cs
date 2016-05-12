@@ -10,21 +10,6 @@ namespace Day_Logger
 {
     public static class ConfigOperations
     {
-        public static List<string> GetStatusConfig()
-        {
-            return GetConfig("Status");
-        }
-
-        public static List<string> GetCallTypeConfig()
-        {
-            return GetConfig("CallType");
-        }
-
-        public static List<string> GetCustomerTypeConfig()
-        {
-            return GetConfig("CustomerType");
-        }
-
         private static List<string> GetConfig(string elementName)
         {
             bool withinElement = false;

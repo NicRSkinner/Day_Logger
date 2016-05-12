@@ -69,16 +69,16 @@ namespace Day_Logger
         {
             cAverageSta.Items.Add("All");
 
-            foreach (string s in ConfigOperations.GetStatusConfig())
+            foreach (string s in ConfigOperations.GetConfig("Status"))
             {
                 cStatusBox.Items.Add(s);
                 cAverageSta.Items.Add(s);
             }
 
-            foreach (string s in ConfigOperations.GetCallTypeConfig())
+            foreach (string s in ConfigOperations.GetConfig("CallType"))
                 cCallTypeBox.Items.Add(s);
 
-            foreach (string s in ConfigOperations.GetCustomerTypeConfig())
+            foreach (string s in ConfigOperations.GetConfig("CustomerType"))
                 cCustomerTypeBox.Items.Add(s);
 
             cStatusBox.Items.Add("");
