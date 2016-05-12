@@ -8,8 +8,16 @@ using System.Xml;
 
 namespace Day_Logger
 {
+    /// <summary>
+    /// Class used to get configuration options from Day Logger.config
+    /// </summary>
     public static class ConfigOperations
     {
+        /// <summary>
+        /// Get the config from a specified config element
+        /// </summary>
+        /// <param name="elementName">The name of the config element.</param>
+        /// <returns>A list of configuration options within the given element.</returns>
         public static List<string> GetConfig(string elementName)
         {
             bool withinElement = false;

@@ -9,6 +9,9 @@ using System.Windows.Controls;
 
 namespace Day_Logger.TimeStamps
 {
+    /// <summary>
+    /// Holds information about a given for timestamps.
+    /// </summary>
     public class TimeStamp : INotifyPropertyChanged
     {
         #region Initializers
@@ -152,12 +155,22 @@ namespace Day_Logger.TimeStamps
         #endregion
     }
 
+    /// <summary>
+    /// The TimeStampCollection that is used to store timestamps for the DataGrid.
+    /// </summary>
     public class TimeStampCollection : ObservableCollection<TimeStamp>
     {
         public TimeStampCollection()
         {
         }
 
+        /// <summary>
+        /// Adds a stamp to the collection given individual parameters.
+        /// </summary>
+        /// <param name="sTime">The Start time.</param>
+        /// <param name="eTime">The End time.</param>
+        /// <param name="sta">The Status.</param>
+        /// <param name="des">The Description.</param>
         public void AddStamp(string sTime, string eTime, string sta, string des)
         {
             this.Add(new TimeStamp()
@@ -169,6 +182,10 @@ namespace Day_Logger.TimeStamps
             });
         }
 
+        /// <summary>
+        /// Adds a stamp to the collection.
+        /// </summary>
+        /// <param name="stamp">The stamp to be added.</param>
         public void AddStamp(TimeStamp stamp)
         {
             this.Add(stamp);

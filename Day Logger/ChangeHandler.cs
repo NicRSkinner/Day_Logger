@@ -7,6 +7,9 @@ using System.Windows;
 
 namespace Day_Logger
 {
+    /// <summary>
+    /// The interface for ChangeHandlers.
+    /// </summary>
     public interface IChangeHandler
     {
         void AddChange(Action undo, Action redo);
@@ -15,6 +18,9 @@ namespace Day_Logger
         void Redo();
     }
 
+    /// <summary>
+    /// The ChangeHandler for a DataGrid
+    /// </summary>
     public class DataGridChangeHandler : IChangeHandler
     {
         #region Initializers
@@ -120,6 +126,9 @@ namespace Day_Logger
         #endregion  
     }
 
+    /// <summary>
+    /// Holds the functions for undo/redo operations.
+    /// </summary>
     public class Change
     {
         public Action UndoFunc { get; set; }

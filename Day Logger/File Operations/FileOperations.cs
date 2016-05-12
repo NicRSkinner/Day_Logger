@@ -288,5 +288,8 @@ namespace Day_Logger.File_Operations
         #endregion
     }
 
+    /// <summary>
+    /// Enum used for file formatting in the stamp file.
+    /// </summary>
     public enum FileFormatting { CSV, DLOG, TXT };
 }
