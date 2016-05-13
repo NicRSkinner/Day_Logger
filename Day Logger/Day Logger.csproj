@@ -87,6 +87,7 @@
     <Compile Include="File Operations\FileOperations.cs" />
     <Compile Include="Time Stamp\TimeStamp.cs" />
     <Compile Include="Time Stamp\TimestampFunctions.cs" />
+    <Compile Include="ViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
