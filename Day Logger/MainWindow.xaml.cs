@@ -112,17 +112,13 @@ namespace Day_Logger
 
             string currSelected = cAverageSta.SelectedValue.ToString();
 
-            for(int i = 0; i < stampColl.Count; ++i)
-            {
-                TimeStamp currStamp = dgStamps.Items[i] as TimeStamp;
+            var sItems = from TimeStamp stamp in dgStamps.Items
+                         where String.Compare(stamp.Status.ToString(), currSelected) == 0
+                         select stamp;
 
-                if (currSelected == "All")
-                    matchedStamps.Add(currStamp.Duration);
-                else
-                {
-                    if (currStamp.Status == currSelected)
-                        matchedStamps.Add(currStamp.Duration);
-                }
+            foreach(TimeStamp stamp in sItems)
+            {
+
             }
 
             lAverageDur.Content = TimestampFunctions.CalculateAverageDuration(matchedStamps);
