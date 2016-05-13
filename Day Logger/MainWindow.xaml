@@ -79,7 +79,8 @@
                     <DataGrid x:Name="dgStamps" ItemsSource="{Binding}" Margin="2,2,2,2"
                       CanUserSortColumns="False" AutoGenerateColumns="False" ColumnWidth="*"
                       SelectionMode="Extended" AllowDrop="True" CanUserResizeRows="False"
-                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                      CanUserAddRows="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn Binding="{Binding Path=STime, Mode=TwoWay}" Header="Start Time" />
                             <DataGridTextColumn Binding="{Binding Path=ETime, Mode=TwoWay}" Header="End Time" />
