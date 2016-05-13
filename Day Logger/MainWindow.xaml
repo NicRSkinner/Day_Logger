@@ -90,7 +90,7 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
-            <TabItem Header="Averages">
+            <TabItem Header="Averages" IsEnabled="False">
                 <Grid Margin="0,0,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="26"/>
