@@ -107,11 +107,23 @@ namespace Day_Logger
         }
 
         /// <summary>
+        /// Clears the change stacks.
+        /// </summary>
+        public void Clear()
+        {
+            lUndo.Clear();
+            lRedo.Clear();
+            HasChanged = false;
+        }
+
+        /// <summary>
         /// This functions raises the changed event to notify any 
         ///     active listeners that changes have been made.
         /// </summary>
         private void Onchanged()
         {
+            HasChanged = true;
+
             if (this.Changed != null)
                 Changed(this, new RoutedEventArgs());
         }
@@ -121,6 +133,7 @@ namespace Day_Logger
         #endregion
         #region Delegates
         public delegate void ChangedEventHandler(object sender, RoutedEventArgs e);
+        public bool HasChanged { get; set; }
         private Stack<Change> lUndo;
         private Stack<Change> lRedo;
         #endregion  

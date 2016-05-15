@@ -96,8 +96,6 @@ namespace Day_Logger
             // Make sure the asterisk was not already added for the change.
             if (!this.Title.EndsWith("*"))
                 this.Title += "*";
-
-            this.changed = true;
         }
         #endregion
         #region Averages
@@ -113,8 +111,13 @@ namespace Day_Logger
             string currSelected = cAverageSta.SelectedValue.ToString();
 
             var sItems = from TimeStamp stamp in dgStamps.Items
+<<<<<<< HEAD
                          where String.Compare(stamp.Status.ToString(), currSelected) == 0
                          select stamp;
+=======
+                        where String.Compare(stamp.Status.ToString(), currSelected) == 0
+                        select stamp;
+>>>>>>> b728f60532cec4e528c894c5a488c32adb606902
 
             foreach(TimeStamp stamp in sItems)
             {
@@ -214,8 +217,14 @@ namespace Day_Logger
         {
             Dictionary<int, TimeStamp> stmpList = new Dictionary<int, TimeStamp>();
 
+            // Make sure something is selected before continuing.
+            if (dgStamps.SelectedItems == null)
+                return;
+
             try
             {
+                // Find all stamps that are selected and store them so that we can
+                // remove them later.
                 foreach (TimeStamp tStamp in dgStamps.SelectedItems)
                 {
                     stmpList.Add(dgStamps.Items.IndexOf(tStamp), tStamp);
@@ -226,12 +235,14 @@ namespace Day_Logger
                 MessageBox.Show("Cannot delete that item", "Error");
             }
 
+            // Loop through the selected stamps and remove them.
             foreach (TimeStamp tStamp in stmpList.Values)
             {
                 stampColl.Remove(tStamp);
                 StmpSave.RemoveStamp(tStamp);
             }
 
+            // Add the change so that it can be undone/redone later.
             changeHandler.AddChange(() =>
             {
                 foreach (var stmp in stmpList.OrderBy(i => i.Key))
@@ -254,7 +265,7 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs</param>
         private void OnNew_Click(object sender, RoutedEventArgs e)
         {
-            if (changed == true)
+            if (changeHandler.HasChanged == true)
             {
                 MessageBoxResult result = System.Windows.MessageBox.Show("Would you like to save the current changes?", "Confirm Changes",
                                 MessageBoxButton.YesNoCancel);
@@ -269,8 +280,8 @@ namespace Day_Logger
             StmpSave.Stamps.Clear();
 
             txtStartTime.Text = String.Empty;
-            changed = false;
             this.Title = "New Document - Day Logger";
+            changeHandler.HasChanged = false;
         }
 
         /// <summary>
@@ -280,7 +291,7 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs</param>
         private void OnOpen_Click(object sender, RoutedEventArgs e)
         {
-            if (changed == true)
+            if (changeHandler.HasChanged == true)
             {
                 MessageBoxResult result = System.Windows.MessageBox.Show("Would you like to save the current changes?", "Confirm Changes",
                                 MessageBoxButton.YesNoCancel);
@@ -303,7 +314,7 @@ namespace Day_Logger
 
             // Set the window title.
             this.Title = System.IO.Path.GetFileName(StmpSave.FilePath) + " - Day Logger";
-            changed = false;
+            changeHandler.HasChanged = false;
         }
 
         /// <summary>
@@ -315,7 +326,7 @@ namespace Day_Logger
         {
             if (StmpSave.Save())
             {
-                changed = false;
+                changeHandler.HasChanged = false;
 
                 // Set the window title.
                 this.Title = System.IO.Path.GetFileName(StmpSave.FilePath) + " - Day Logger";
@@ -338,7 +349,7 @@ namespace Day_Logger
         /// <param name="e">The RoutedEventArgs.</param>
         private void OnExit_Click(object sender, RoutedEventArgs e)
         {
-            if(changed == true)
+            if(changeHandler.HasChanged == true)
             {
                 MessageBoxResult result = MessageBox.Show("Would you like to save your file before closing?", "Confirm Changes",
                                 MessageBoxButton.YesNoCancel);
@@ -373,16 +384,16 @@ namespace Day_Logger
             {
                 switch (e.Key)
                 {
+                    case Key.E:
+                        btnRemoveStamp_Click(this, new RoutedEventArgs());
+                        e.Handled = true;
+                        break;
                     case Key.Q:
                         btnAddStamp_Click(this, new RoutedEventArgs());
                         e.Handled = true;
                         break;
                     case Key.S:
                         OnSave_Click(this, new RoutedEventArgs());
-                        e.Handled = true;
-                        break;
-                    case Key.W:
-                        btnRemoveStamp_Click(this, new RoutedEventArgs());
                         e.Handled = true;
                         break;
                     case Key.Y:
@@ -423,7 +434,6 @@ namespace Day_Logger
         }
         #endregion
         #region Instance Fields
-        private bool changed = false;
         private StampFile StmpSave;
         private DataGridChangeHandler changeHandler;
         private TimeStampCollection stampColl;

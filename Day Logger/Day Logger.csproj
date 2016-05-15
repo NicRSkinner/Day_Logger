@@ -85,6 +85,7 @@
     <Compile Include="Config\ConfigOperations.cs" />
     <Compile Include="DragAndDrop.cs" />
     <Compile Include="File Operations\FileOperations.cs" />
+    <Compile Include="Logging\Logging.cs" />
     <Compile Include="Time Stamp\TimeStamp.cs" />
     <Compile Include="Time Stamp\TimestampFunctions.cs" />
     <Compile Include="ViewModel.cs" />
